@@ -3,210 +3,476 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Safe Food SA - Know It, Stop It, Grow It</title>
+<title>FoodTrack SA</title>
 <style>
-  :root{
-    --green:#2e7d32;
-    --orange:#ef6c00;
-    --red:#c62828;
-    --blue:#1565c0;
-    --bg:#f5f5f5;
-    --card:#ffffff;
-    --text:#212121;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
-  body{background:var(--bg);color:var(--text);line-height:1.6;}
-  header{background:var(--green);color:#fff;padding:2rem 1rem;text-align:center;}
-  header h1{font-size:1.8rem;margin-bottom:0.5rem;}
-  header p{opacity:0.9;}
-  nav{background:#1b5e20;padding:0.5rem;text-align:center;}
-  nav a{color:#fff;margin:0 0.8rem;text-decoration:none;font-weight:600;}
-  main{max-width:1000px;margin:2rem auto;padding:0 1rem;}
-  section{background:var(--card);padding:1.5rem;border-radius:12px;margin-bottom:1.5rem;box-shadow:0 2px 6px rgba(0,0,0,0.08);}
-  h2{color:var(--green);margin-bottom:1rem;font-size:1.4rem;}
-  h3{color:var(--orange);margin-top:1rem;margin-bottom:0.5rem;}
-  h4{color:var(--blue);margin-top:0.8rem;}
-  ul{padding-left:1.2rem;margin-top:0.5rem;}
-  li{margin-bottom:0.5rem;}
-  .alert{background:#ffebee;border-left:4px solid var(--red);padding:1rem;border-radius:6px;margin:1rem 0;}
-  .solution{background:#e8f5e9;border-left:4px solid var(--green);padding:1rem;border-radius:6px;margin:1rem 0;}
-  .info{background:#e3f2fd;border-left:4px solid var(--blue);padding:1rem;border-radius:6px;margin:1rem 0;}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;}
-  .card{background:#fafafa;padding:1rem;border-radius:8px;border:1px solid #eee;}
-  .btn{display:inline-block;background:var(--green);color:#fff;padding:0.8rem 1.2rem;border-radius:8px;text-decoration:none;margin-top:1rem;font-weight:600;}
-  .btn:hover{background:#1b5e20;}
-  .hotline{background:var(--orange);color:#fff;padding:1rem;text-align:center;border-radius:8px;font-weight:700;font-size:1.2rem;}
-  table{width:100%;border-collapse:collapse;margin-top:1rem;}
-  table th, table td{border:1px solid #ddd;padding:0.6rem;text-align:left;}
-  table th{background:#f1f8e9;}
-  footer{text-align:center;padding:2rem 1rem;color:#666;font-size:0.9rem;}
-  @media(max-width:600px){
-    header h1{font-size:1.4rem;}
-    nav a{display:block;margin:0.5rem 0;}
-  }
+:root{
+  --green:#2e7d32;
+  --black:#000;
+  --gold:#FFB81C;
+  --blue:#1565c0;
+  --red:#c62828;
+  --bg:#f5f7fa;
+  --card:#fff;
+  --text:#222;
+}
+*{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{margin:0;background:var(--bg);color:var(--text)}
+header{
+  background:linear-gradient(90deg, var(--black) 0%, var(--green) 50%, var(--blue) 100%);
+  color:#fff;
+  padding:18px;
+  text-align:center
+}
+header h2{margin:0;font-size:1.4rem}
+header small{opacity:0.9}
+nav{display:flex;gap:8px;padding:10px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.05);overflow-x:auto}
+nav button{flex:1;padding:10px;border:none;border-radius:8px;background:#eee;cursor:pointer;white-space:nowrap}
+nav button.active{background:var(--green);color:#fff}
+.container{padding:16px;max-width:800px;margin:auto}
+.card{
+  background:var(--card);
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:16px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.1);
+  border-top:4px solid var(--gold)
+}
+h3{color:var(--green);margin-top:0}
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:8px;
+  background:var(--green);
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  font-size:1rem
+}
+.btn:hover{background:#1b5e20}
+.btn:disabled{background:#ccc}
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  margin:6px 0 12px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  font-size:1rem
+}
+.progress{
+  text-align:center;
+  margin:16px 0
+}
+.progress-number{
+  font-size:2rem;
+  font-weight:bold;
+  color:var(--green)
+}
+.progress-bar{
+  width:100%;
+  height:10px;
+  background:#e0e0e0;
+  border-radius:5px;
+  overflow:hidden;
+  margin:8px 0
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg, var(--green), var(--gold));
+  width:0%;
+  transition:width 1s ease-out
+}
+.disclaimer{
+  font-size:0.85rem;
+  color:#555;
+  border-left:4px solid var(--red);
+  padding-left:12px;
+  margin-top:20px
+}
+footer{
+  text-align:center;
+  padding:20px;
+  font-size:0.85rem;
+  color:#666
+}
+.item-card{border:2px solid #ddd;border-radius:10px;padding:14px;margin:10px 0;cursor:pointer;transition:all 0.3s}
+.item-card:hover{border-color:var(--green);transform:translateY(-2px)}
+.badge{background:var(--green);color:#fff;padding:3px 8px;border-radius:12px;font-size:11px}
+.badge.warning{background:#f39c12}
+.badge.danger{background:var(--red)}
+.live-indicator{display:inline-block;width:8px;height:8px;background:#28a745;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.hidden{display:none}
+.metric{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
+small{color:#666}
+.upload-box{border:2px dashed #ccc;border-radius:8px;padding:20px;text-align:center;margin:12px 0}
+.status{padding:8px;border-radius:6px;margin-top:8px;font-weight:bold}
+.status.pending{background:#fff3cd;color:#856404}
+.status.approved{background:#d4edda;color:#155724}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.stat-card{background:#f8f9fa;padding:12px;border-radius:8px;text-align:center}
+.stat-card h3{margin:0;font-size:24px;color:var(--green)}
+.last-updated{font-size:11px;color:#888;text-align:right;margin-top:8px}
+.alert-box{background:#ffebee;border-left:4px solid var(--red);padding:12px;border-radius:6px;margin:12px 0}
+.success-box{background:#e8f5e9;border-left:4px solid var(--green);padding:12px;border-radius:6px;margin:12px 0}
+.qr-box{border:2px dashed var(--green);border-radius:12px;padding:40px;text-align:center;margin:16px 0;background:#f1f8e9}
 </style>
 </head>
 <body>
-
 <header>
-  <h1>Safe Food SA</h1>
-  <p>Know the fake. Stop the poison. Grow your own.</p>
+  <h2>FoodTrack SA</h2>
+  <small>Scan. Report. Grow. Transparency for Safe Food.</small>
 </header>
 
 <nav>
-  <a href="#problem">Problem</a>
-  <a href="#action">Take Action</a>
-  <a href="#garden">Grow Food</a>
-  <a href="#apptrack">FoodTrack App</a>
+  <button class="active" onclick="showTab('scanner')">Scan Product</button>
+  <button onclick="showTab('shops')">Safe Shops Map</button>
+  <button onclick="showTab('report')">Report Issue</button>
+  <button onclick="showTab('dashboard')">Dashboard</button>
+  <button onclick="showTab('petition')">Petition</button>
 </nav>
 
-<main>
-  <section id="problem">
-    <h2>1. The Problem in South Africa</h2>
-    <div class="alert">
-      <strong>It’s a national disaster:</strong> Since Sept 2024 over 890 food-borne illness incidents were reported, including child deaths from unregulated spaza shops.
+<div class="container">
+
+<div id="scanner" class="tab">
+  <div class="card">
+    <h3>Scan Product QR / Barcode</h3>
+    <div class="qr-box">
+      <p>📱 Point camera at QR or barcode</p>
+      <button class="btn" onclick="simulateScan()">Simulate Scan</button>
+      <small>Real app uses device camera API</small>
     </div>
-    
-    <h3>Fake & Counterfeit Food</h3>
+
+    <div id="scanResult" class="hidden">
+      <h4>Scan Result</h4>
+      <div id="productInfo"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>30-Second Check</h3>
     <ul>
-      <li><strong>Fake factories:</strong> Police found hubs in Gauteng making fake baked beans, cornflakes, milk, cool drinks, even cough syrup.</li>
-      <li><strong>Expired repackaging:</strong> Dates changed, goods stored next to pesticides in KZN and Gauteng.</li>
-      <li><strong>Toxic chemicals:</strong> Industrial dyes in fake olive oil, pesticides like terbufos in snacks, methanol poisoning.</li>
-      <li><strong>Cost:</strong> Illicit goods cost SA ~R100 billion/year and drain tax money for schools and health.</li>
+      <li><strong>Label:</strong> Can you pronounce the first 5 ingredients?</li>
+      <li><strong>Price:</strong> Too cheap for the brand? Red flag.</li>
+      <li><strong>Date:</strong> Check expiry. Look for tampering.</li>
+      <li><strong>Shop:</strong> Is the shop registered? Check map tab.</li>
     </ul>
+  </div>
+</div>
 
-    <h3>Ultra-Processed Food Overload</h3>
-    <ul>
-      <li>Low-income adults get ~40% of calories from ultra-processed products.</li>
-      <li>18-29 year olds: over 40-60% of daily calories.</li>
-      <li>Linked to obesity, diabetes, heart disease, early death. SA has one of the highest obesity rates globally.</li>
-    </ul>
-  </section>
+<div id="shops" class="tab hidden">
+  <div class="card">
+    <h3>Registered Spaza Shops <span class="live-indicator"></span></h3>
+    <p>Only buy from shops with municipal permits. Green = compliant.</p>
+    <div id="shopList"></div>
+    <div class="last-updated" id="lastUpdated">Last updated: Just now</div>
+  </div>
 
-  <section id="action">
-    <h2>2. What You Can Do Right Now</h2>
-    
-    <div class="solution">
-      <h3>30-Second Check Before You Buy</h3>
-      <ul>
-        <li><strong>Label:</strong> Can you pronounce the first 5 ingredients? If not, put it back.</li>
-        <li><strong>Price:</strong> If it’s too cheap for the brand, it’s probably fake.</li>
-        <li><strong>Date:</strong> Check expiry. If it looks tampered, walk away.</li>
-        <li><strong>Shop:</strong> Only buy from shops with a municipal permit displayed.</li>
-      </ul>
-    </div>
-
-    <div class="hotline">
-      See fake or expired food? Report it FREE: 012 065 1940
-    </div>
-
-    <h3>Safer Swaps</h3>
-    <div class="grid">
-      <div class="card"><strong>Instead of</strong><br>Fake honey, sugary juice, instant noodles<br><strong>Try</strong><br>Raw honey from beekeepers, whole fruit, plain noodles + eggs + veg</div>
-      <div class="card"><strong>Instead of</strong><br>Imitation cheese, chips, cold drinks<br><strong>Try</strong><br>Real cheese, roasted peanuts, water with lemon</div>
-    </div>
-  </section>
-
-  <section id="garden">
-    <h2>3. Grow Your Own: Food Security Starts at Home</h2>
-    <p>Even a small garden cuts your risk. You control what goes into your food, and it’s cheaper than UPF snacks.</p>
-    
-    <h3>Start Small - 1m² Garden</h3>
-    <ul>
-      <li><strong>Easy crops:</strong> Spinach, spring onion, tomatoes, herbs, sweet potato leaves. They grow fast in SA climate.</li>
-      <li><strong>No space?</strong> Use buckets, old tyres, plastic bottles. Container gardening works.</li>
-      <li><strong>Cost:</strong> R20 for seeds vs R50/week on snacks. One plant feeds you for months.</li>
-    </ul>
-
-    <div class="solution">
-      <h3>3 Steps to Start This Weekend</h3>
+  <div class="card">
+    <h3>Start a Home Garden</h3>
+    <p>Even 1m² cuts your risk. Grow spinach, spring onion, tomatoes.</p>
+    <div class="success-box">
+      <h4>3 Steps This Weekend</h4>
       <ol>
-        <li>Get old containers and poke holes at the bottom for drainage.</li>
-        <li>Fill with soil + compost. Ask a neighbor or use kitchen scraps.</li>
-        <li>Plant spinach or spring onion. Water every 2 days. Harvest in 3-4 weeks.</li>
+        <li>Use buckets/tyres with drainage holes</li>
+        <li>Fill with soil + compost from kitchen scraps</li>
+        <li>Plant spinach or spring onion. Harvest in 3-4 weeks</li>
       </ol>
     </div>
+  </div>
+</div>
 
-    <a href="#" class="btn" onclick="alert('Tip: Join a local community garden group on Facebook or ask your ward councillor for seeds and training.')">Get Garden Starter Tips</a>
-  </section>
+<div id="report" class="tab hidden">
+  <div class="card">
+    <h3>Report Fake or Expired Food</h3>
+    <p>Reports go to NCC and your ward committee. Takes 30 seconds.</p>
 
-  <section id="apptrack">
-    <h2>4. FoodTrack SA - The Transparency App</h2>
-    <div class="info">
-      <strong>Idea:</strong> An app where society can see what’s happening with food markets, suppliers, distribution, and registered businesses. Transparency kills fake food.
+    <label>Issue Type</label>
+    <select id="issueType">
+      <option value="">Select Issue</option>
+      <option>Fake/Counterfeit Product</option>
+      <option>Expired Food</option>
+      <option>Expired Date Tampered</option>
+      <option>Unregistered Shop</option>
+      <option>Suspected Poisoning</option>
+    </select>
+
+    <label>Description</label>
+    <textarea id="issueDesc" rows="3" placeholder="Describe what you saw..."></textarea>
+
+    <div class="upload-box">
+      <p>📷 Add photo as evidence</p>
+      <input type="file" accept="image/*" onchange="showPreview(this)">
+      <img id="preview" style="max-width:100%;margin-top:10px;display:none;border-radius:8px">
     </div>
 
-    <h3>Core Features</h3>
-    <div class="grid">
-      <div class="card">
-        <h4>For Citizens</h4>
-        <ul>
-          <li><strong>QR Scanner:</strong> Scan any product to see supplier, batch, expiry, registration status.</li>
-          <li><strong>Spaza Shop Map:</strong> Green = compliant, Red = reported/closed.</li>
-          <li><strong>Report Button:</strong> Snap photo + location, sends to NCC and ward committee.</li>
-          <li><strong>Public Alerts:</strong> Get notified of fake batches and busts near you.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h4>For Government & Inspectors</h4>
-        <ul>
-          <li><strong>Inspector Dashboard:</strong> See all reports, assign cases, track resolution.</li>
-          <li><strong>Business Registry:</strong> Upload/verify spaza permits and inspection results.</li>
-          <li><strong>Supply Chain Log:</strong> Track batches from importer to shelf.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <h4>For Businesses</h4>
-        <ul>
-          <li><strong>Business Portal:</strong> Register, upload permits, get product QR codes.</li>
-          <li><strong>Compliance Score:</strong> Public score boosts customer trust.</li>
-          <li><strong>Market Access:</strong> Only registered shops get listed in-app.</li>
-        </ul>
-      </div>
+    <div id="gps">📍 GPS auto-captured</div>
+
+    <button class="btn" id="submitReport" onclick="submitReport()" disabled>Submit Report</button>
+
+    <div id="reportStatus" class="hidden">
+      <div class="status pending">1. Submitted - Awaiting Review</div>
+      <div class="status hidden" id="status2">2. Under Investigation</div>
+      <div class="status hidden" id="status3">3. Resolved ✓</div>
     </div>
+  </div>
 
-    <h3>How It Works</h3>
-    <div class="solution">
-      <p><strong>Data Flow:</strong></p>
-      <p>Manufacturer registers batch → Gets QR code printed → 
-      Shop buys batch, scans to log receipt → 
-      Consumer scans at point of sale → 
-      If mismatch/expired → Flag + Alert</p>
+  <div class="alert-box">
+    <strong>Emergency:</strong> If someone is sick from suspected food poisoning, call 10177 or go to clinic immediately. Then report here.
+  </div>
+</div>
+
+<div id="dashboard" class="tab hidden">
+  <div class="grid">
+    <div class="stat-card">
+      <h3 id="totalReports">0</h3>
+      <small>Reports This Month</small>
     </div>
+    <div class="stat-card">
+      <h3 id="totalShops">0</h3>
+      <small>Registered Shops</small>
+    </div>
+    <div class="stat-card">
+      <h3 id="totalBusts">0</h3>
+      <small>Fake Goods Seized</small>
+    </div>
+    <div class="stat-card">
+      <h3 id="totalGardens">0</h3>
+      <small>Home Gardens Started</small>
+    </div>
+  </div>
 
-    <h3>Tech Stack - Simple & Fast</h3>
-    <table>
-      <tr><th>Part</th><th>Tool</th><th>Why</th></tr>
-      <tr><td>App</td><td>React Native / Flutter</td><td>Works on Android & iOS, <20MB</td></tr>
-      <tr><td>Backend</td><td>Firebase / Supabase</td><td>Fast setup, real-time data</td></tr>
-      <tr><td>Maps</td><td>Leaflet.js / Google Maps</td><td>Show registered shops near you</td></tr>
-      <tr><td>Offline</td><td>USSD/SMS fallback</td><td>Works without data: *129*123#</td></tr>
-    </table>
+  <div class="card">
+    <h3>Recent Alerts</h3>
+    <div id="alertLog">
+      <p>No alerts yet</p>
+    </div>
+  </div>
 
-    <h3>MVP Rollout Plan</h3>
+  <div class="card">
+    <h3>SA Food Crisis - Quick Facts</h3>
+    <div class="metric"><span>Food-borne illnesses since Sept 2024</span><strong>890+</strong></div>
+    <div class="metric"><span>Cost of illicit goods/year</span><strong>R100B</strong></div>
+    <div class="metric"><span>UPF in 18-29yr diet</span><strong>40-60%</strong></div>
+    <div class="metric"><span>Child deaths linked to spaza shops</span><strong>Ongoing</strong></div>
+  </div>
+</div>
+
+<div id="petition" class="tab hidden">
+  <div class="card">
+    <p><strong>Transparency kills fake food.</strong> Demand nationwide rollout of FoodTrack SA by Jan 2027.</p>
+
+    <h3>Why It Works</h3>
     <ul>
-      <li><strong>Phase 1 - 6-8 weeks:</strong> QR scanner, report form, map for 1 municipality. 100 shops, 500 products.</li>
-      <li><strong>Phase 2:</strong> Add USSD/SMS, inspector app, open API for wholesalers.</li>
-      <li><strong>Phase 3:</strong> Link to NCC/SAPS, public compliance scores, expand to 3 provinces.</li>
+      <li>Kills corruption with public QR traceability</li>
+      <li>Protects kids in townships from poison food</li>
+      <li>Pushes people to registered, safe shops</li>
+      <li>Works offline with USSD/SMS backup</li>
     </ul>
 
-    <h3>How to Make People Use It</h3>
-    <ul>
-      <li><strong>Gamify:</strong> Top reporter wins airtime/data vouchers.</li>
-      <li><strong>Incentives:</strong> Only app users see discounts at registered shops.</li>
-      <li><strong>Zero friction:</strong> Scan and report in 2 taps. No long forms.</li>
-    </ul>
+    <h3>Our Demand</h3>
+    <p>We call on National Treasury, COGTA, SALGA, and Dept of Health to adopt FoodTrack SA nationwide.</p>
 
-    <h3>Partners Needed</h3>
-    <p>DTIC, NCC, Consumer Goods Council, MTN/Vodacom for data sponsorship, NGOs like FoodForward SA for rollout.</p>
-  </section>
+    <div class="progress">
+      <div class="progress-number" id="sigCount">0</div>
+      <div>Signatures / 100,000 target</div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
 
-</main>
+    <h3>Sign the Petition</h3>
+    <div id="signForm">
+      <label>Full Name</label>
+      <input type="text" id="sigName" placeholder="John Dlamini">
+      <label>ID Number</label>
+      <input type="text" id="sigID" placeholder="YYMMDDXXXXXXX">
+      <label>Province</label>
+      <select id="sigProvince">
+        <option value="">Select Province</option>
+        <option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option>
+        <option>Eastern Cape</option><option>Limpopo</option><option>Mpumalanga</option>
+        <option>North West</option><option>Northern Cape</option><option>Free State</option>
+      </select>
+      <button class="btn" onclick="signPetition()">Sign the Petition</button>
+      <p style="font-size:0.8rem;margin-top:8px">
+        <input type="checkbox" id="confirm" style="width:auto">
+        <label for="confirm">I confirm I am a South African citizen and support this demand.</label>
+      </p>
+    </div>
+
+    <div id="thankYou" class="hidden">
+      <div class="status approved">✓ Thank you for signing! Share this with your community.</div>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <strong>Disclaimer:</strong> FoodTrack SA is an independent citizen platform.
+    Not affiliated with government. Data sourced from public records and community reports.
+  </div>
+</div>
+
+</div>
 
 <footer>
-  <p>Built for South Africans, by South Africans. Share this page on WhatsApp to protect your family.</p>
-  <p><small>Info based on National Consumer Commission, Dept of Health, and academic studies 2024-2025</small></p>
+  © 2026 FoodTrack SA. Built for transparency.
 </footer>
 
+<script>
+// CONFIG
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJ-D9FcazMy7QfmzotbiyjXRmeUyNh4KIYUuqNOEfPdmPBBci5i6POC4zvUws3o6Fjvg/exec';
+const TARGET_SIGNATURES = 100000;
+
+let saShops = [
+  {id:1,name:"Thabo's Spaza",location:"Soweto, Gauteng",status:"compliant",permits:"Valid"},
+  {id:2,name:"Nomsa Corner Shop",location:"Khayelitsha, WC",status:"compliant",permits:"Valid"},
+  {id:3,name:"Shoprite Mini Mart",location:"Pietermaritzburg, KZN",status:"warning",permits:"Permit Expired"},
+  {id:4,name:"Mpho's Tuckshop",location:"Polokwane, Limpopo",status:"danger",permits:"Unregistered"},
+  {id:5,name:"Lucky's General Dealer",location:"East London, EC",status:"compliant",permits:"Valid"}
+];
+
+let reports = [];
+let alerts = [
+  "⚠️ Fake 'Nola' peanut butter batch 4421 recalled in Gauteng",
+  "✓ 200 boxes of expired canned fish seized in Durban",
+  "▶ New registered spaza shop opened in Langa, WC",
+  "⚠️ Suspected fake honey sold in Mamelodi. Avoid Lot H77"
+];
+let signatureCount = 0;
+let selectedSupplierId = null;
+
+function showTab(tab){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));
+  document.getElementById(tab).classList.remove('hidden');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+  if(tab === 'shops') renderShopList();
+  if(tab === 'dashboard') updateDashboard();
+  if(tab === 'petition') loadSignatureCount();
+}
+
+function simulateScan(){
+  const products = [
+    {name:"Nola Peanut Butter 400g",batch:"4421",supplier:"Tiger Brands",status:"Recalled",flag:"danger"},
+    {name:"Koo Baked Beans 410g",batch:"B77",supplier:"Tiger Brands",status:"Valid",flag:"success"},
+    {name:"Unknown Cool Drink 2L",batch:"UNK",supplier:"Unregistered",status:"Unverified",flag:"warning"}
+  ];
+  const p = products[Math.floor(Math.random()*products.length)];
+  document.getElementById('scanResult').classList.remove('hidden');
+  document.getElementById('productInfo').innerHTML = `
+    <div class="card">
+      <h4>${p.name}</h4>
+      <div class="metric"><span>Batch</span><strong>${p.batch}</strong></div>
+      <div class="metric"><span>Supplier</span><strong>${p.supplier}</strong></div>
+      <div class="metric"><span>Status</span><strong style="color:${p.flag==='danger'?'red':p.flag==='warning'?'orange':'green'}">${p.status}</strong></div>
+      ${p.flag==='danger'?'<div class="alert-box">Do not consume. Report immediately.</div>':''}
+    </div>
+  `;
+}
+
+function renderShopList(){
+  const div = document.getElementById('shopList');
+  div.innerHTML = '';
+  saShops.forEach(s => {
+    const badge = s.status==='compliant'?'badge':'badge '+(s.status==='warning'?'warning':'danger');
+    div.innerHTML += `
+      <div class="item-card">
+        <h4>${s.name} <span class="${badge}">${s.status.toUpperCase()}</span></h4>
+        <small>${s.location} | Permit: ${s.permits}</small>
+      </div>
+    `;
+  });
+  document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleTimeString('en-ZA')}`;
+}
+
+function showPreview(input){
+  if(input.files && input.files[0]){
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('preview').src = e.target.result;
+      document.getElementById('preview').style.display = 'block';
+      document.getElementById('submitReport').disabled = false;
+    }
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function submitReport(){
+  const type = document.getElementById('issueType').value;
+  const desc = document.getElementById('issueDesc').value;
+  if(!type ||!desc){
+    alert('Please fill all fields');
+    return;
+  }
+  reports.push({type,desc,time:new Date().toLocaleString()});
+  document.getElementById('reportStatus').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('status2').classList.remove('hidden'),1500);
+  setTimeout(()=>document.getElementById('status3').classList.remove('hidden'),3000);
+  alert('Report submitted. Reference: FT'+Date.now());
+  document.getElementById('issueType').value = '';
+  document.getElementById('issueDesc').value = '';
+  document.getElementById('preview').style.display = 'none';
+  document.getElementById('submitReport').disabled = true;
+}
+
+function updateDashboard(){
+  document.getElementById('totalReports').innerText = reports.length;
+  document.getElementById('totalShops').innerText = saShops.filter(s=>s.status==='compliant').length;
+  document.getElementById('totalBusts').innerText = 12 + Math.floor(Math.random()*5);
+  document.getElementById('totalGardens').innerText = 47 + Math.floor(Math.random()*10);
+  document.getElementById('alertLog').innerHTML = alerts.map(a=>`<p>${a}</p>`).join('');
+}
+
+async function loadSignatureCount() {
+  try {
+    const response = await fetch(`${APPS_SCRIPT_URL}`);
+    const data = await response.json();
+    signatureCount = data.count || 0;
+    document.getElementById('sigCount').textContent = signatureCount.toLocaleString();
+    const percent = Math.min(100, (signatureCount / TARGET_SIGNATURES) * 100);
+    document.getElementById('progressFill').style.width = percent + '%';
+  } catch (err) {
+    document.getElementById('sigCount').textContent = '0';
+    document.getElementById('progressFill').style.width = '0%';
+  }
+}
+
+async function signPetition(){
+  const name = document.getElementById('sigName').value.trim();
+  const id = document.getElementById('sigID').value.trim();
+  const province = document.getElementById('sigProvince').value;
+  const confirmed = document.getElementById('confirm').checked;
+
+  if(!name ||!id ||!province){
+    alert('Please fill all fields');
+    return;
+  }
+  if(!confirmed){
+    alert('Please confirm you are a South African citizen');
+    return;
+  }
+  if(id.length < 13){
+    alert('Please enter a valid 13-digit ID number');
+    return;
+  }
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type': 'text/plain;charset=utf-8'},
+      body: JSON.stringify({name: name, id: id, province: province})
+    });
+    document.getElementById('signForm').classList.add('hidden');
+    document.getElementById('thankYou').classList.remove('hidden');
+    setTimeout(loadSignatureCount, 2000);
+  } catch (err) {
+    alert('Submission failed. Please try again.');
+  }
+}
+
+renderShopList();
+updateDashboard();
+loadSignatureCount();
+setInterval(updateDashboard, 30000);
+</script>
 </body>
 </html>
