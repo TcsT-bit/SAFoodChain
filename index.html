@@ -627,5 +627,209 @@ function renderShopList(){
 // Call setLang on load
 setLang(currentLang);
 </script>
+  <script>
+// CONFIG
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJ-D9FcazMy7QfmzotbiyjXRmeUyNh4KIYUuqNOEfPdmPBBci5i6POC4zvUws3o6Fjvg/exec';
+const TARGET_SIGNATURES = 100000;
+
+let saShops = [
+  {id:1,name:"Thabo's Spaza",location:"Soweto, Gauteng",lat:-26.25,lng:27.85,status:"compliant",permits:"Valid",reports:0},
+  {id:2,name:"Nomsa Corner Shop",location:"Khayelitsha, WC",lat:-34.03,lng:18.65,status:"compliant",permits:"Valid",reports:1},
+  {id:3,name:"Shoprite Mini Mart",location:"Pietermaritzburg, KZN",lat:-29.6,lng:30.38,status:"warning",permits:"Permit Expired",reports:3},
+  {id:4,name:"Mpho's Tuckshop",location:"Polokwane, Limpopo",lat:-23.9,lng:29.45,status:"danger",permits:"Unregistered",reports:5},
+  {id:5,name:"Lucky's General Dealer",location:"East London, EC",lat:-33.02,lng:27.9,status:"compliant",permits:"Valid",reports:0}
+];
+
+let reports = JSON.parse(localStorage.getItem('ft_reports')||'[]');
+let alerts = ["⚠️ Fake 'Nola' peanut butter batch 4421 recalled in Gauteng"];
+let signatureCount = 0;
+let html5QrCode = null;
+let lastScannedCode = null;
+let userLocation = null;
+let map = null;
+let chart = null;
+let currentLang = localStorage.getItem('ft_lang')||'en';
+
+const i18n = {
+  en:{ /* keep your en object as is */
+    title:"FoodTrack SA",subtitle:"Scan. Report. Grow. Transparency for Safe Food.",
+    scan:"Scan Product",shops:"Safe Shops Map",report:"Report Issue",dashboard:"Dashboard",petition:"Petition",
+    scan_title:"Scan Product QR / Barcode",stop_camera:"Stop Camera",scan_result:"Scan Result",
+    report_btn:"Report This Product",check_title:"30-Second Check",
+    check1:"Label: Can you pronounce the first 5 ingredients?",
+    check2:"Price: Too cheap for the brand? Red flag.",
+    check3:"Date: Check expiry. Look for tampering.",
+    check4:"Shop: Is the shop registered? Check map tab.",
+    map_title:"Registered Spaza Shops",map_desc:"Only buy from shops with municipal permits. Green = compliant.",
+    garden_title:"Start a Home Garden",garden_steps:"3 Steps This Weekend",
+    garden1:"Use buckets/tyres with drainage holes",
+    garden2:"Fill with soil + compost from kitchen scraps",
+    garden3:"Plant spinach or spring onion. Harvest in 3-4 weeks",
+    report_title:"Report Fake or Expired Food",speak:"🎤 Speak Report",
+    issue_type:"Issue Type",select_issue:"Select Issue",
+    issue1:"Fake/Counterfeit Product",issue2:"Expired Food",issue3:"Expired Date Tampered",
+    issue4:"Unregistered Shop",issue5:"Suspected Poisoning",
+    code_label:"Product Code / Barcode",desc:"Description",photo:"📷 Add photo as evidence",
+    submit:"Submit Report",status1:"1. Submitted - Awaiting Review",
+    status2:"2. Under Investigation",status3:"3. Resolved ✓",
+    reports:"Reports This Month",shops_count:"Registered Shops",busts:"Fake Goods Seized",
+    gardens:"Gardens Started",alerts:"Recent Alerts",analytics:"Analytics",
+    leaders:"🏆 Top Reporters This Month",petition_head:"Transparency kills fake food.",
+    petition_body:"Demand nationwide rollout of FoodTrack SA by Jan 2027.",
+    signatures:"Signatures",target:"target",sign:"Sign the Petition",
+    name_ph:"Full Name",id_ph:"ID Number",select_province:"Select Province",
+    sign_btn:"Sign the Petition",thanks:"✓ Thank you for signing!",
+    admin:"Admin Panel",login:"Login",pending:"Pending Reports",export:"Export CSV",
+    recall_banner:"⚠️ Recalled product detected in your area. Check dashboard for details.",
+    footer:"Built for transparency.",
+    valid:"Valid",unverified:"Unverified",recalled:"Recalled",
+    compliant:"Compliant",warning:"Warning",danger:"Danger",
+    last_updated:"Last updated"
+  },
+  zu:{ /* keep your zu object */ },
+  xh:{ /* keep your xh object */ },
+  af:{ /* keep your af object */ },
+  ns:{ /* keep your ns object */ },
+  tn:{ /* keep your tn object */ }
+}; // <- THIS was missing
+
+// Language switching
+function setLang(lang, event){
+  currentLang = lang;
+  localStorage.setItem('ft_lang',lang);
+
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
+  });
+
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-ph');
+    if(i18n[lang] && i18n[lang][key]) el.placeholder = i18n[lang][key];
+  });
+
+  document.querySelectorAll('.lang-toggle button').forEach(b=>{
+    b.classList.remove('active');
+  });
+  if(event && event.target) event.target.classList.add('active');
+
+  renderShopList(); // re-render dynamic content
+}
+
+// Tab switching
+function showTab(tab, event){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));
+  document.getElementById(tab).classList.remove('hidden');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  if(event && event.target) event.target.classList.add('active');
+
+  if(tab === 'scanner' &&!html5QrCode) startScanner();
+  if(tab!== 'scanner' && html5QrCode) stopScanner();
+  if(tab === 'shops') initMap();
+  if(tab === 'dashboard') updateDashboard();
+  if(tab === 'petition') loadSignatureCount();
+  if(tab === 'admin' && new URLSearchParams(window.location.search).has('admin'))
+    document.getElementById('adminBtn').classList.remove('hidden');
+}
+
+// Scanner stubs - replace with your full code
+function startScanner(){
+  console.log("Start scanner");
+}
+function stopScanner(){
+  if(html5QrCode){
+    html5QrCode.stop().then(()=>{html5QrCode.clear(); html5QrCode=null;});
+  }
+}
+function onScanSuccess(decodedText){
+  checkProduct(decodedText);
+}
+function checkProduct(code){
+  const demoDB = {
+    "4421": {name:"Nola Peanut Butter 400g",batch:"4421",supplier:"Tiger Brands",status:"recalled",flag:"danger"},
+    "B77": {name:"Koo Baked Beans 410g",batch:"B77",supplier:"Tiger Brands",status:"valid",flag:"success"}
+  };
+  const p = demoDB[code] || {name:"Product Not Found",batch:code,supplier:"Unknown",status:"unverified",flag:"warning"};
+  const t = i18n[currentLang];
+  const statusText = t[p.status] || p.status;
+
+  document.getElementById('scanResult').classList.remove('hidden');
+  document.getElementById('productInfo').innerHTML = `
+    <div class="card">
+      <h4>${p.name}</h4>
+      <div class="metric"><span>Code/Batch</span><strong>${p.batch}</strong></div>
+      <div class="metric"><span>Supplier</span><strong>${p.supplier}</strong></div>
+      <div class="metric"><span>Status</span><strong style="color:${p.flag==='danger'?'red':p.flag==='warning'?'orange':'green'}">${statusText}</strong></div>
+      ${p.flag==='danger'?`<div class="alert-box">${t.recall_banner}</div>`:''}
+    </div>
+  `;
+  document.getElementById('issueCode').value = code;
+  if(p.flag==='danger') document.getElementById('recallBanner').classList.remove('hidden');
+  stopScanner();
+}
+function reportThisProduct(){
+  showTab('report');
+  document.getElementById('issueType').value = 'Fake/Counterfeit Product';
+}
+
+// Map
+function initMap(){
+  if(map) return;
+  map = L.map('map').setView([-26.2041,28.0473],10);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  renderShopList();
+}
+
+// Render shops with translated status
+function renderShopList(){
+  const t = i18n[currentLang];
+  const div = document.getElementById('shopList');
+  if(!div) return;
+  div.innerHTML = '';
+  saShops.forEach(s => {
+    const statusText = t[s.status] || s.status;
+    const badge = s.status==='compliant'?'badge':'badge '+(s.status==='warning'?'warning':'danger');
+    div.innerHTML += `
+      <div class="item-card">
+        <h4>${s.name} <span class="${badge}">${statusText.toUpperCase()}</span></h4>
+        <small>${s.location} | Permit: ${s.permits}</small>
+      </div>
+    `;
+  });
+  document.getElementById('lastUpdated').textContent = `${t.last_updated || 'Last updated'}: ${new Date().toLocaleTimeString('en-ZA')}`;
+}
+
+// Report stubs
+function showPreview(input){}
+function submitReport(){}
+function startVoice(){}
+function syncReports(){}
+
+// Dashboard stubs
+function updateDashboard(){
+  document.getElementById('totalReports').innerText = reports.length;
+  document.getElementById('totalShops').innerText = saShops.filter(s=>s.status==='compliant').length;
+  document.getElementById('totalBusts').innerText = 12;
+  document.getElementById('totalGardens').innerText = 47;
+  document.getElementById('alertLog').innerHTML = alerts.map(a=>`<p>${a}</p>`).join('');
+}
+async function loadSignatureCount(){
+  signatureCount = 0;
+  document.getElementById('sigCount').textContent = signatureCount;
+  document.getElementById('progressFill').style.width = '0%';
+}
+async function signPetition(){}
+function adminLogin(){}
+function exportCSV(){}
+function toggleContrast(){
+  document.body.classList.toggle('high-contrast');
+}
+
+// Init
+setLang(currentLang);
+renderShopList();
+updateDashboard();
+loadSignatureCount();
+</script>
 </body>
 </html>
