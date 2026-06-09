@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safe Food SA - Know It, Stop It, Grow It</title>
+<style>
+  :root{
+    --green:#2e7d32;
+    --orange:#ef6c00;
+    --red:#c62828;
+    --blue:#1565c0;
+    --bg:#f5f5f5;
+    --card:#ffffff;
+    --text:#212121;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
+  body{background:var(--bg);color:var(--text);line-height:1.6;}
+  header{background:var(--green);color:#fff;padding:2rem 1rem;text-align:center;}
+  header h1{font-size:1.8rem;margin-bottom:0.5rem;}
+  header p{opacity:0.9;}
+  nav{background:#1b5e20;padding:0.5rem;text-align:center;}
+  nav a{color:#fff;margin:0 0.8rem;text-decoration:none;font-weight:600;}
+  main{max-width:1000px;margin:2rem auto;padding:0 1rem;}
+  section{background:var(--card);padding:1.5rem;border-radius:12px;margin-bottom:1.5rem;box-shadow:0 2px 6px rgba(0,0,0,0.08);}
+  h2{color:var(--green);margin-bottom:1rem;font-size:1.4rem;}
+  h3{color:var(--orange);margin-top:1rem;margin-bottom:0.5rem;}
+  h4{color:var(--blue);margin-top:0.8rem;}
+  ul{padding-left:1.2rem;margin-top:0.5rem;}
+  li{margin-bottom:0.5rem;}
+  .alert{background:#ffebee;border-left:4px solid var(--red);padding:1rem;border-radius:6px;margin:1rem 0;}
+  .solution{background:#e8f5e9;border-left:4px solid var(--green);padding:1rem;border-radius:6px;margin:1rem 0;}
+  .info{background:#e3f2fd;border-left:4px solid var(--blue);padding:1rem;border-radius:6px;margin:1rem 0;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1rem;}
+  .card{background:#fafafa;padding:1rem;border-radius:8px;border:1px solid #eee;}
+  .btn{display:inline-block;background:var(--green);color:#fff;padding:0.8rem 1.2rem;border-radius:8px;text-decoration:none;margin-top:1rem;font-weight:600;}
+  .btn:hover{background:#1b5e20;}
+  .hotline{background:var(--orange);color:#fff;padding:1rem;text-align:center;border-radius:8px;font-weight:700;font-size:1.2rem;}
+  table{width:100%;border-collapse:collapse;margin-top:1rem;}
+  table th, table td{border:1px solid #ddd;padding:0.6rem;text-align:left;}
+  table th{background:#f1f8e9;}
+  footer{text-align:center;padding:2rem 1rem;color:#666;font-size:0.9rem;}
+  @media(max-width:600px){
+    header h1{font-size:1.4rem;}
+    nav a{display:block;margin:0.5rem 0;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Safe Food SA</h1>
+  <p>Know the fake. Stop the poison. Grow your own.</p>
+</header>
+
+<nav>
+  <a href="#problem">Problem</a>
+  <a href="#action">Take Action</a>
+  <a href="#garden">Grow Food</a>
+  <a href="#apptrack">FoodTrack App</a>
+</nav>
+
+<main>
+  <section id="problem">
+    <h2>1. The Problem in South Africa</h2>
+    <div class="alert">
+      <strong>It’s a national disaster:</strong> Since Sept 2024 over 890 food-borne illness incidents were reported, including child deaths from unregulated spaza shops.
+    </div>
+    
+    <h3>Fake & Counterfeit Food</h3>
+    <ul>
+      <li><strong>Fake factories:</strong> Police found hubs in Gauteng making fake baked beans, cornflakes, milk, cool drinks, even cough syrup.</li>
+      <li><strong>Expired repackaging:</strong> Dates changed, goods stored next to pesticides in KZN and Gauteng.</li>
+      <li><strong>Toxic chemicals:</strong> Industrial dyes in fake olive oil, pesticides like terbufos in snacks, methanol poisoning.</li>
+      <li><strong>Cost:</strong> Illicit goods cost SA ~R100 billion/year and drain tax money for schools and health.</li>
+    </ul>
+
+    <h3>Ultra-Processed Food Overload</h3>
+    <ul>
+      <li>Low-income adults get ~40% of calories from ultra-processed products.</li>
+      <li>18-29 year olds: over 40-60% of daily calories.</li>
+      <li>Linked to obesity, diabetes, heart disease, early death. SA has one of the highest obesity rates globally.</li>
+    </ul>
+  </section>
+
+  <section id="action">
+    <h2>2. What You Can Do Right Now</h2>
+    
+    <div class="solution">
+      <h3>30-Second Check Before You Buy</h3>
+      <ul>
+        <li><strong>Label:</strong> Can you pronounce the first 5 ingredients? If not, put it back.</li>
+        <li><strong>Price:</strong> If it’s too cheap for the brand, it’s probably fake.</li>
+        <li><strong>Date:</strong> Check expiry. If it looks tampered, walk away.</li>
+        <li><strong>Shop:</strong> Only buy from shops with a municipal permit displayed.</li>
+      </ul>
+    </div>
+
+    <div class="hotline">
+      See fake or expired food? Report it FREE: 012 065 1940
+    </div>
+
+    <h3>Safer Swaps</h3>
+    <div class="grid">
+      <div class="card"><strong>Instead of</strong><br>Fake honey, sugary juice, instant noodles<br><strong>Try</strong><br>Raw honey from beekeepers, whole fruit, plain noodles + eggs + veg</div>
+      <div class="card"><strong>Instead of</strong><br>Imitation cheese, chips, cold drinks<br><strong>Try</strong><br>Real cheese, roasted peanuts, water with lemon</div>
+    </div>
+  </section>
+
+  <section id="garden">
+    <h2>3. Grow Your Own: Food Security Starts at Home</h2>
+    <p>Even a small garden cuts your risk. You control what goes into your food, and it’s cheaper than UPF snacks.</p>
+    
+    <h3>Start Small - 1m² Garden</h3>
+    <ul>
+      <li><strong>Easy crops:</strong> Spinach, spring onion, tomatoes, herbs, sweet potato leaves. They grow fast in SA climate.</li>
+      <li><strong>No space?</strong> Use buckets, old tyres, plastic bottles. Container gardening works.</li>
+      <li><strong>Cost:</strong> R20 for seeds vs R50/week on snacks. One plant feeds you for months.</li>
+    </ul>
+
+    <div class="solution">
+      <h3>3 Steps to Start This Weekend</h3>
+      <ol>
+        <li>Get old containers and poke holes at the bottom for drainage.</li>
+        <li>Fill with soil + compost. Ask a neighbor or use kitchen scraps.</li>
+        <li>Plant spinach or spring onion. Water every 2 days. Harvest in 3-4 weeks.</li>
+      </ol>
+    </div>
+
+    <a href="#" class="btn" onclick="alert('Tip: Join a local community garden group on Facebook or ask your ward councillor for seeds and training.')">Get Garden Starter Tips</a>
+  </section>
+
+  <section id="apptrack">
+    <h2>4. FoodTrack SA - The Transparency App</h2>
+    <div class="info">
+      <strong>Idea:</strong> An app where society can see what’s happening with food markets, suppliers, distribution, and registered businesses. Transparency kills fake food.
+    </div>
+
+    <h3>Core Features</h3>
+    <div class="grid">
+      <div class="card">
+        <h4>For Citizens</h4>
+        <ul>
+          <li><strong>QR Scanner:</strong> Scan any product to see supplier, batch, expiry, registration status.</li>
+          <li><strong>Spaza Shop Map:</strong> Green = compliant, Red = reported/closed.</li>
+          <li><strong>Report Button:</strong> Snap photo + location, sends to NCC and ward committee.</li>
+          <li><strong>Public Alerts:</strong> Get notified of fake batches and busts near you.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>For Government & Inspectors</h4>
+        <ul>
+          <li><strong>Inspector Dashboard:</strong> See all reports, assign cases, track resolution.</li>
+          <li><strong>Business Registry:</strong> Upload/verify spaza permits and inspection results.</li>
+          <li><strong>Supply Chain Log:</strong> Track batches from importer to shelf.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>For Businesses</h4>
+        <ul>
+          <li><strong>Business Portal:</strong> Register, upload permits, get product QR codes.</li>
+          <li><strong>Compliance Score:</strong> Public score boosts customer trust.</li>
+          <li><strong>Market Access:</strong> Only registered shops get listed in-app.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>How It Works</h3>
+    <div class="solution">
+      <p><strong>Data Flow:</strong></p>
+      <p>Manufacturer registers batch → Gets QR code printed → 
+      Shop buys batch, scans to log receipt → 
+      Consumer scans at point of sale → 
+      If mismatch/expired → Flag + Alert</p>
+    </div>
+
+    <h3>Tech Stack - Simple & Fast</h3>
+    <table>
+      <tr><th>Part</th><th>Tool</th><th>Why</th></tr>
+      <tr><td>App</td><td>React Native / Flutter</td><td>Works on Android & iOS, <20MB</td></tr>
+      <tr><td>Backend</td><td>Firebase / Supabase</td><td>Fast setup, real-time data</td></tr>
+      <tr><td>Maps</td><td>Leaflet.js / Google Maps</td><td>Show registered shops near you</td></tr>
+      <tr><td>Offline</td><td>USSD/SMS fallback</td><td>Works without data: *129*123#</td></tr>
+    </table>
+
+    <h3>MVP Rollout Plan</h3>
+    <ul>
+      <li><strong>Phase 1 - 6-8 weeks:</strong> QR scanner, report form, map for 1 municipality. 100 shops, 500 products.</li>
+      <li><strong>Phase 2:</strong> Add USSD/SMS, inspector app, open API for wholesalers.</li>
+      <li><strong>Phase 3:</strong> Link to NCC/SAPS, public compliance scores, expand to 3 provinces.</li>
+    </ul>
+
+    <h3>How to Make People Use It</h3>
+    <ul>
+      <li><strong>Gamify:</strong> Top reporter wins airtime/data vouchers.</li>
+      <li><strong>Incentives:</strong> Only app users see discounts at registered shops.</li>
+      <li><strong>Zero friction:</strong> Scan and report in 2 taps. No long forms.</li>
+    </ul>
+
+    <h3>Partners Needed</h3>
+    <p>DTIC, NCC, Consumer Goods Council, MTN/Vodacom for data sponsorship, NGOs like FoodForward SA for rollout.</p>
+  </section>
+
+</main>
+
+<footer>
+  <p>Built for South Africans, by South Africans. Share this page on WhatsApp to protect your family.</p>
+  <p><small>Info based on National Consumer Commission, Dept of Health, and academic studies 2024-2025</small></p>
+</footer>
+
+</body>
+</html>
