@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FoodTrack SA</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <style>
 :root{
   --green:#2e7d32;
@@ -17,6 +18,8 @@
 }
 *{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
 body{margin:0;background:var(--bg);color:var(--text)}
+body.high-contrast{background:#000;color:#fff}
+body.high-contrast.card{background:#111;border-color:#fff}
 header{
   background:linear-gradient(90deg, var(--black) 0%, var(--green) 50%, var(--blue) 100%);
   color:#fff;
@@ -28,7 +31,7 @@ header small{opacity:0.9}
 nav{display:flex;gap:8px;padding:10px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.05);overflow-x:auto}
 nav button{flex:1;padding:10px;border:none;border-radius:8px;background:#eee;cursor:pointer;white-space:nowrap}
 nav button.active{background:var(--green);color:#fff}
-.container{padding:16px;max-width:800px;margin:auto}
+.container{padding:16px;max-width:900px;margin:auto}
 .card{
   background:var(--card);
   border-radius:12px;
@@ -117,63 +120,80 @@ small{color:#666}
 .last-updated{font-size:11px;color:#888;text-align:right;margin-top:8px}
 .alert-box{background:#ffebee;border-left:4px solid var(--red);padding:12px;border-radius:6px;margin:12px 0}
 .success-box{background:#e8f5e9;border-left:4px solid var(--green);padding:12px;border-radius:6px;margin:12px 0}
-#qr-reader{width:100%;max-width:400px;margin:auto;border-radius:12px;overflow:hidden}
+#qr-reader,#map{width:100%;max-width:400px;margin:auto;border-radius:12px;overflow:hidden}
+#map{height:350px}
+.leaderboard-item{display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee}
+.lang-toggle{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.lang-toggle button{padding:6px 10px;border:1px solid #ddd;border-radius:6px;background:#fff;cursor:pointer}
+.lang-toggle button.active{background:var(--green);color:#fff}
+.recall-banner{background:var(--red);color:#fff;padding:12px;border-radius:8px;margin-bottom:12px;text-align:center;font-weight:bold}
 </style>
 </head>
 <body>
 <header>
-  <h2>FoodTrack SA</h2>
-  <small>Scan. Report. Grow. Transparency for Safe Food.</small>
+  <h2 id="title">FoodTrack SA</h2>
+  <small id="subtitle">Scan. Report. Grow. Transparency for Safe Food.</small>
 </header>
 
 <nav>
-  <button class="active" onclick="showTab('scanner')">Scan Product</button>
-  <button onclick="showTab('shops')">Safe Shops Map</button>
-  <button onclick="showTab('report')">Report Issue</button>
-  <button onclick="showTab('dashboard')">Dashboard</button>
-  <button onclick="showTab('petition')">Petition</button>
+  <button class="active" onclick="showTab('scanner')" data-i18n="scan">Scan Product</button>
+  <button onclick="showTab('shops')" data-i18n="shops">Safe Shops Map</button>
+  <button onclick="showTab('report')" data-i18n="report">Report Issue</button>
+  <button onclick="showTab('dashboard')" data-i18n="dashboard">Dashboard</button>
+  <button onclick="showTab('petition')" data-i18n="petition">Petition</button>
+  <button onclick="showTab('admin')" id="adminBtn" class="hidden">Admin</button>
 </nav>
 
 <div class="container">
+<div class="lang-toggle">
+  <button onclick="setLang('en')" class="active">EN</button>
+  <button onclick="setLang('zu')">ZU</button>
+  <button onclick="setLang('xh')">XH</button>
+  <button onclick="setLang('af')">AF</button>
+  <button onclick="toggleContrast()">High Contrast</button>
+</div>
+
+<div id="recallBanner" class="recall-banner hidden">
+  ⚠️ Recalled product detected in your area. Check dashboard for details.
+</div>
 
 <div id="scanner" class="tab">
   <div class="card">
-    <h3>Scan Product QR / Barcode</h3>
+    <h3 data-i18n="scan_title">Scan Product QR / Barcode</h3>
     <div id="qr-reader"></div>
     <button class="btn secondary" id="stopScan" onclick="stopScanner()" style="display:none">Stop Camera</button>
 
     <div id="scanResult" class="hidden">
       <h4>Scan Result</h4>
       <div id="productInfo"></div>
-      <button class="btn" onclick="reportThisProduct()">Report This Product</button>
+      <button class="btn" onclick="reportThisProduct()" data-i18n="report_btn">Report This Product</button>
     </div>
   </div>
 
   <div class="card">
-    <h3>30-Second Check</h3>
-    <ul>
-      <li><strong>Label:</strong> Can you pronounce the first 5 ingredients?</li>
-      <li><strong>Price:</strong> Too cheap for the brand? Red flag.</li>
-      <li><strong>Date:</strong> Check expiry. Look for tampering.</li>
-      <li><strong>Shop:</strong> Is the shop registered? Check map tab.</li>
+    <h3 data-i18n="check_title">30-Second Check</h3>
+    <ul id="checkList">
+      <li data-i18n="check1">Label: Can you pronounce the first 5 ingredients?</li>
+      <li data-i18n="check2">Price: Too cheap for the brand? Red flag.</li>
+      <li data-i18n="check3">Date: Check expiry. Look for tampering.</li>
+      <li data-i18n="check4">Shop: Is the shop registered? Check map tab.</li>
     </ul>
   </div>
 </div>
 
 <div id="shops" class="tab hidden">
   <div class="card">
-    <h3>Registered Spaza Shops <span class="live-indicator"></span></h3>
-    <p>Only buy from shops with municipal permits. Green = compliant.</p>
-    <div id="shopList"></div>
+    <h3 data-i18n="map_title">Registered Spaza Shops <span class="live-indicator"></span></h3>
+    <p data-i18n="map_desc">Only buy from shops with municipal permits. Green = compliant.</p>
+    <div id="map"></div>
     <div class="last-updated" id="lastUpdated">Last updated: Just now</div>
   </div>
 
   <div class="card">
-    <h3>Start a Home Garden</h3>
-    <p>Even 1m² cuts your risk. Grow spinach, spring onion, tomatoes.</p>
+    <h3 data-i18n="garden_title">Start a Home Garden</h3>
     <div class="success-box">
-      <h4>3 Steps This Weekend</h4>
-      <ol>
+      <h4 data-i18n="garden_steps">3 Steps This Weekend</h4>
+      <ol id="gardenSteps">
         <li>Use buckets/tyres with drainage holes</li>
         <li>Fill with soil + compost from kitchen scraps</li>
         <li>Plant spinach or spring onion. Harvest in 3-4 weeks</li>
@@ -184,10 +204,10 @@ small{color:#666}
 
 <div id="report" class="tab hidden">
   <div class="card">
-    <h3>Report Fake or Expired Food</h3>
-    <p>Reports go to NCC and your ward committee. Takes 30 seconds.</p>
+    <h3 data-i18n="report_title">Report Fake or Expired Food</h3>
+    <button class="btn secondary" onclick="startVoice()">🎤 Speak Report</button>
 
-    <label>Issue Type</label>
+    <label data-i18n="issue_type">Issue Type</label>
     <select id="issueType">
       <option value="">Select Issue</option>
       <option>Fake/Counterfeit Product</option>
@@ -200,7 +220,7 @@ small{color:#666}
     <label>Product Code / Barcode</label>
     <input type="text" id="issueCode" placeholder="Scanned code will appear here" readonly>
 
-    <label>Description</label>
+    <label data-i18n="desc">Description</label>
     <textarea id="issueDesc" rows="3" placeholder="Describe what you saw..."></textarea>
 
     <div class="upload-box">
@@ -211,7 +231,7 @@ small{color:#666}
 
     <div id="gps">📍 GPS: Waiting for location...</div>
 
-    <button class="btn" id="submitReport" onclick="submitReport()" disabled>Submit Report</button>
+    <button class="btn" id="submitReport" onclick="submitReport()" disabled data-i18n="submit">Submit Report</button>
 
     <div id="reportStatus" class="hidden">
       <div class="status pending">1. Submitted - Awaiting Review</div>
@@ -219,21 +239,17 @@ small{color:#666}
       <div class="status hidden" id="status3">3. Resolved ✓</div>
     </div>
   </div>
-
-  <div class="alert-box">
-    <strong>Emergency:</strong> If someone is sick from suspected food poisoning, call 10177 or go to clinic immediately. Then report here.
-  </div>
 </div>
 
 <div id="dashboard" class="tab hidden">
   <div class="grid">
     <div class="stat-card">
       <h3 id="totalReports">0</h3>
-      <small>Reports This Month</small>
+      <small data-i18n="reports">Reports This Month</small>
     </div>
     <div class="stat-card">
       <h3 id="totalShops">0</h3>
-      <small>Registered Shops</small>
+      <small data-i18n="shops_count">Registered Shops</small>
     </div>
     <div class="stat-card">
       <h3 id="totalBusts">0</h3>
@@ -241,45 +257,38 @@ small{color:#666}
     </div>
     <div class="stat-card">
       <h3 id="totalGardens">0</h3>
-      <small>Home Gardens Started</small>
+      <small>Gardens Started</small>
     </div>
   </div>
 
   <div class="card">
     <h3>Recent Alerts</h3>
-    <div id="alertLog">
-      <p>No alerts yet</p>
-    </div>
+    <div id="alertLog"></div>
   </div>
 
   <div class="card">
-    <h3>SA Food Crisis - Quick Facts</h3>
-    <div class="metric"><span>Food-borne illnesses since Sept 2024</span><strong>890+</strong></div>
-    <div class="metric"><span>Cost of illicit goods/year</span><strong>R100B</strong></div>
-    <div class="metric"><span>UPF in 18-29yr diet</span><strong>40-60%</strong></div>
+    <h3>Analytics</h3>
+    <canvas id="reportChart" height="200"></canvas>
+  </div>
+
+  <div class="card">
+    <h3>🏆 Top Reporters This Month</h3>
+    <div id="leaderboard"></div>
   </div>
 </div>
 
 <div id="petition" class="tab hidden">
   <div class="card">
     <p><strong>Transparency kills fake food.</strong> Demand nationwide rollout of FoodTrack SA by Jan 2027.</p>
-
-    <h3>Our Demand</h3>
-    <p>We call on National Treasury, COGTA, SALGA, and Dept of Health to adopt FoodTrack SA nationwide.</p>
-
     <div class="progress">
       <div class="progress-number" id="sigCount">0</div>
       <div>Signatures / 100,000 target</div>
       <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     </div>
-
     <h3>Sign the Petition</h3>
     <div id="signForm">
-      <label>Full Name</label>
-      <input type="text" id="sigName" placeholder="John Dlamini">
-      <label>ID Number</label>
-      <input type="text" id="sigID" placeholder="YYMMDDXXXXXXX">
-      <label>Province</label>
+      <input type="text" id="sigName" placeholder="Full Name">
+      <input type="text" id="sigID" placeholder="ID Number">
       <select id="sigProvince">
         <option value="">Select Province</option>
         <option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option>
@@ -287,14 +296,25 @@ small{color:#666}
         <option>North West</option><option>Northern Cape</option><option>Free State</option>
       </select>
       <button class="btn" onclick="signPetition()">Sign the Petition</button>
-      <p style="font-size:0.8rem;margin-top:8px">
-        <input type="checkbox" id="confirm" style="width:auto">
-        <label for="confirm">I confirm I am a South African citizen and support this demand.</label>
-      </p>
     </div>
-
     <div id="thankYou" class="hidden">
-      <div class="status approved">✓ Thank you for signing! Share this with your community.</div>
+      <div class="status approved">✓ Thank you for signing!</div>
+    </div>
+  </div>
+</div>
+
+<div id="admin" class="tab hidden">
+  <div class="card">
+    <h3>Admin Panel</h3>
+    <div id="adminLogin">
+      <input type="email" id="adminEmail" placeholder="Email">
+      <input type="password" id="adminPass" placeholder="Password">
+      <button class="btn" onclick="adminLogin()">Login</button>
+    </div>
+    <div id="adminPanel" class="hidden">
+      <h4>Pending Reports</h4>
+      <div id="adminReports"></div>
+      <button class="btn" onclick="exportCSV()">Export CSV</button>
     </div>
   </div>
 </div>
@@ -306,38 +326,88 @@ small{color:#666}
 </footer>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // CONFIG
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJ-D9FcazMy7QfmzotbiyjXRmeUyNh4KIYUuqNOEfPdmPBBci5i6POC4zvUws3o6Fjvg/exec';
 const TARGET_SIGNATURES = 100000;
 
 let saShops = [
-  {id:1,name:"Thabo's Spaza",location:"Soweto, Gauteng",status:"compliant",permits:"Valid"},
-  {id:2,name:"Nomsa Corner Shop",location:"Khayelitsha, WC",status:"compliant",permits:"Valid"},
-  {id:3,name:"Shoprite Mini Mart",location:"Pietermaritzburg, KZN",status:"warning",permits:"Permit Expired"},
-  {id:4,name:"Mpho's Tuckshop",location:"Polokwane, Limpopo",status:"danger",permits:"Unregistered"},
-  {id:5,name:"Lucky's General Dealer",location:"East London, EC",status:"compliant",permits:"Valid"}
+  {id:1,name:"Thabo's Spaza",location:"Soweto, Gauteng",lat:-26.25,lng:27.85,status:"compliant",permits:"Valid",reports:0},
+  {id:2,name:"Nomsa Corner Shop",location:"Khayelitsha, WC",lat:-34.03,lng:18.65,status:"compliant",permits:"Valid",reports:1},
+  {id:3,name:"Shoprite Mini Mart",location:"Pietermaritzburg, KZN",lat:-29.6,lng:30.38,status:"warning",permits:"Permit Expired",reports:3},
+  {id:4,name:"Mpho's Tuckshop",location:"Polokwane, Limpopo",lat:-23.9,lng:29.45,status:"danger",permits:"Unregistered",reports:5},
+  {id:5,name:"Lucky's General Dealer",location:"East London, EC",lat:-33.02,lng:27.9,status:"compliant",permits:"Valid",reports:0}
 ];
 
-let reports = [];
-let alerts = [
-  "⚠️ Fake 'Nola' peanut butter batch 4421 recalled in Gauteng",
-  "✓ 200 boxes of expired canned fish seized in Durban",
-  "▶ New registered spaza shop opened in Langa, WC"
-];
+let reports = JSON.parse(localStorage.getItem('ft_reports')||'[]');
+let alerts = ["⚠️ Fake 'Nola' peanut butter batch 4421 recalled in Gauteng"];
 let signatureCount = 0;
 let html5QrCode = null;
 let lastScannedCode = null;
 let userLocation = null;
+let map = null;
+let chart = null;
+let currentLang = localStorage.getItem('ft_lang')||'en';
 
-// Get GPS on load
+const i18n = {
+  en:{scan:"Scan Product",shops:"Safe Shops Map",report:"Report Issue",dashboard:"Dashboard",petition:"Petition",
+      scan_title:"Scan Product QR / Barcode",check_title:"30-Second Check",
+      check1:"Label: Can you pronounce the first 5 ingredients?",
+      check2:"Price: Too cheap for the brand? Red flag.",
+      check3:"Date: Check expiry. Look for tampering.",
+      check4:"Shop: Is the shop registered? Check map tab.",
+      report_btn:"Report This Product",map_title:"Registered Spaza Shops",
+      map_desc:"Only buy from shops with municipal permits. Green = compliant.",
+      garden_title:"Start a Home Garden",garden_steps:"3 Steps This Weekend",
+      report_title:"Report Fake or Expired Food",issue_type:"Issue Type",
+      desc:"Description",submit:"Submit Report",reports:"Reports This Month",
+      shops_count:"Registered Shops"},
+  zu:{scan:"Skena Umkhiqizo",shops:"Imephu Yezitolo",report:"Bika Inkinga",dashboard:"Ideshibhodi",petition:"Isicelo",
+      scan_title:"Skena i-QR / i-Barcode",check_title:"Ukuhlola Okusheshayo",
+      check1:"Ilebula: Ungayisho izithako ezi-5 zokuqala?",
+      check2:"Intengo: Ishibhile kakhulu? Ingozi.",
+      check3:"Usuku: Hlola usuku lokuphelelwa.",
+      check4:"Isitolo: Sibhalisiwe? Bheka imephu.",
+      report_btn:"Bika Lo Mkhiqizo"},
+  xh:{scan:"Skena Imveliso",shops:"Imephu Yeevenkile",report:"Xela Ingxaki",dashboard:"Ideshibhodi",petition:"Isicelo",
+      scan_title:"Skena i-QR / i-Barcode",check_title:"Ukuhlola Okukhawulezayo"},
+  af:{scan:"Skandeer Produk",shops:"Winkels Kaart",report:"Rapporteer Probleem",dashboard:"Paneel",petition:"Petisie",
+      scan_title:"Skandeer QR / Streepkode",check_title:"30-Sekonde Gaan Na"}
+};
+
+// Service Worker for offline
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+
+// Language
+function setLang(lang){
+  currentLang = lang;
+  localStorage.setItem('ft_lang',lang);
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
+  });
+  document.querySelectorAll('.lang-toggle button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+function toggleContrast(){
+  document.body.classList.toggle('high-contrast');
+}
+
+// GPS
 if(navigator.geolocation){
   navigator.geolocation.getCurrentPosition(pos=>{
     userLocation = {lat:pos.coords.latitude, lng:pos.coords.longitude};
     document.getElementById('gps').textContent = `📍 GPS: ${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}`;
+    if(map) map.setView([userLocation.lat,userLocation.lng],13);
   }, ()=>{document.getElementById('gps').textContent = '📍 GPS: Not available'});
 }
 
+// Tab switching
 function showTab(tab){
   document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));
   document.getElementById(tab).classList.remove('hidden');
@@ -346,18 +416,19 @@ function showTab(tab){
 
   if(tab === 'scanner' &&!html5QrCode) startScanner();
   if(tab!== 'scanner' && html5QrCode) stopScanner();
-  if(tab === 'shops') renderShopList();
+  if(tab === 'shops') initMap();
   if(tab === 'dashboard') updateDashboard();
   if(tab === 'petition') loadSignatureCount();
+  if(tab === 'admin' && new URLSearchParams(window.location.search).has('admin'))
+    document.getElementById('adminBtn').classList.remove('hidden');
 }
 
+// Scanner
 function startScanner(){
   html5QrCode = new Html5Qrcode("qr-reader");
-  const config = { fps: 10, qrbox: {width:250,height:250} };
-
-  html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
-   .then(()=>{document.getElementById('stopScan').style.display='block'})
-   .catch(err=>alert("Camera error: "+err));
+  html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess)
+  .then(()=>{document.getElementById('stopScan').style.display='block'})
+  .catch(err=>alert("Camera error: "+err));
 }
 
 function stopScanner(){
@@ -370,34 +441,30 @@ function stopScanner(){
   }
 }
 
-function onScanSuccess(decodedText, decodedResult){
+function onScanSuccess(decodedText){
   if(decodedText === lastScannedCode) return;
   lastScannedCode = decodedText;
   checkProduct(decodedText);
 }
 
 function checkProduct(code){
-  // Demo lookup - replace with your API call
   const demoDB = {
     "4421": {name:"Nola Peanut Butter 400g",batch:"4421",supplier:"Tiger Brands",status:"Recalled",flag:"danger"},
-    "B77": {name:"Koo Baked Beans 410g",batch:"B77",supplier:"Tiger Brands",status:"Valid",flag:"success"},
-    "UNK": {name:"Unknown Product",batch:"UNK",supplier:"Unregistered",status:"Unverified",flag:"warning"}
+    "B77": {name:"Koo Baked Beans 410g",batch:"B77",supplier:"Tiger Brands",status:"Valid",flag:"success"}
   };
-
   const p = demoDB[code] || {name:"Product Not Found",batch:code,supplier:"Unknown",status:"Unverified",flag:"warning"};
-
   document.getElementById('scanResult').classList.remove('hidden');
   document.getElementById('productInfo').innerHTML = `
     <div class="card">
       <h4>${p.name}</h4>
-      <div class="metric"><span>Code/Batch</span><strong>${p.batch}</strong></div>
+      <div class="metric"><span>Code</span><strong>${p.batch}</strong></div>
       <div class="metric"><span>Supplier</span><strong>${p.supplier}</strong></div>
-      <div class="metric"><span>Status</span><strong style="color:${p.flag==='danger'?'red':p.flag==='warning'?'orange':'green'}">${p.status}</strong></div>
+      <div class="metric"><span>Status</span><strong style="color:${p.flag==='danger'?'red':'green'}">${p.status}</strong></div>
       ${p.flag==='danger'?'<div class="alert-box">Do not consume. Report immediately.</div>':''}
     </div>
   `;
-
   document.getElementById('issueCode').value = code;
+  if(p.flag==='danger') document.getElementById('recallBanner').classList.remove('hidden');
   stopScanner();
 }
 
@@ -406,21 +473,19 @@ function reportThisProduct(){
   document.getElementById('issueType').value = 'Fake/Counterfeit Product';
 }
 
-function renderShopList(){
-  const div = document.getElementById('shopList');
-  div.innerHTML = '';
-  saShops.forEach(s => {
-    const badge = s.status==='compliant'?'badge':'badge '+(s.status==='warning'?'warning':'danger');
-    div.innerHTML += `
-      <div class="item-card">
-        <h4>${s.name} <span class="${badge}">${s.status.toUpperCase()}</span></h4>
-        <small>${s.location} | Permit: ${s.permits}</small>
-      </div>
-    `;
+// Map
+function initMap(){
+  if(map) return;
+  map = L.map('map').setView(userLocation? [userLocation.lat,userLocation.lng]:[-26.2041,28.0473],10);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+  saShops.forEach(s=>{
+    const color = s.status==='compliant'?'green':s.status==='warning'?'orange':'red';
+    L.circleMarker([s.lat,s.lng],{color:color,radius:8}).addTo(map)
+    .bindPopup(`<b>${s.name}</b><br>${s.location}<br>Status: ${s.status}<br>Reports: ${s.reports}`);
   });
-  document.getElementById('lastUpdated').textContent = `Last updated: ${new Date().toLocaleTimeString('en-ZA')}`;
 }
 
+// Report submission with offline queue
 function showPreview(input){
   if(input.files && input.files[0]){
     const reader = new FileReader();
@@ -434,93 +499,126 @@ function showPreview(input){
 }
 
 function submitReport(){
-  const type = document.getElementById('issueType').value;
-  const desc = document.getElementById('issueDesc').value;
-  const code = document.getElementById('issueCode').value;
-
-  if(!type ||!desc){
-    alert('Please fill all fields');
-    return;
-  }
-
-  reports.push({
-    type,desc,code,
+  const report = {
+    type:document.getElementById('issueType').value,
+    desc:document.getElementById('issueDesc').value,
+    code:document.getElementById('issueCode').value,
     location:userLocation,
-    time:new Date().toLocaleString(),
+    time:new Date().toISOString(),
     photo:document.getElementById('preview').src
-  });
+  };
+  if(!report.type||!report.desc){alert('Fill all fields');return;}
+
+  reports.push(report);
+  localStorage.setItem('ft_reports',JSON.stringify(reports));
+
+  if(navigator.onLine){
+    syncReports();
+  }else{
+    alert('Offline. Report saved and will sync when online.');
+  }
 
   document.getElementById('reportStatus').classList.remove('hidden');
   setTimeout(()=>document.getElementById('status2').classList.remove('hidden'),1500);
   setTimeout(()=>document.getElementById('status3').classList.remove('hidden'),3000);
-
-  alert('Report submitted. Ref: FT'+Date.now());
-
-  // Reset form
-  document.getElementById('issueType').value = '';
-  document.getElementById('issueDesc').value = '';
-  document.getElementById('issueCode').value = '';
-  document.getElementById('preview').style.display = 'none';
-  document.getElementById('submitReport').disabled = true;
 }
 
+function syncReports(){
+  // Replace with your API call when ready
+  console.log('Syncing reports:',reports);
+}
+
+// Voice input
+function startVoice(){
+  if(!('webkitSpeechRecognition' in window)){alert('Voice not supported');return;}
+  const recognition = new webkitSpeechRecognition();
+  recognition.lang = currentLang==='zu'?'zu-ZA':'en-ZA';
+  recognition.onresult = e=>{
+    document.getElementById('issueDesc').value = e.results[0][0].transcript;
+  };
+  recognition.start();
+}
+
+// Dashboard + Chart
 function updateDashboard(){
   document.getElementById('totalReports').innerText = reports.length;
   document.getElementById('totalShops').innerText = saShops.filter(s=>s.status==='compliant').length;
   document.getElementById('totalBusts').innerText = 12 + Math.floor(Math.random()*5);
   document.getElementById('totalGardens').innerText = 47 + Math.floor(Math.random()*10);
   document.getElementById('alertLog').innerHTML = alerts.map(a=>`<p>${a}</p>`).join('');
+
+  // Chart
+  if(!chart){
+    chart = new Chart(document.getElementById('reportChart'),{
+      type:'bar',
+      data:{
+        labels:['Gauteng','KZN','WC','EC','LP'],
+        datasets:[{label:'Reports',data:[5,3,2,1,1],backgroundColor:'rgba(46,125,50,0.7)'}]
+      }
+    });
+  }
+
+  // Leaderboard
+  const leaders = [{name:'Thabo M',count:12},{name:'Nomsa K',count:9},{name:'Sipho D',count:7}];
+  document.getElementById('leaderboard').innerHTML = leaders.map((l,i)=>
+    `<div class="leaderboard-item"><span>${i+1}. ${l.name}</span><span>${l.count} reports</span></div>`
+  ).join('');
 }
 
+// Petition
 async function loadSignatureCount() {
   try {
     const response = await fetch(`${APPS_SCRIPT_URL}`);
     const data = await response.json();
     signatureCount = data.count || 0;
     document.getElementById('sigCount').textContent = signatureCount.toLocaleString();
-    const percent = Math.min(100, (signatureCount / TARGET_SIGNATURES) * 100);
-    document.getElementById('progressFill').style.width = percent + '%';
-  } catch (err) {
-    document.getElementById('sigCount').textContent = '0';
-    document.getElementById('progressFill').style.width = '0%';
-  }
+    document.getElementById('progressFill').style.width = Math.min(100,(signatureCount/TARGET_SIGNATURES)*100) + '%';
+  } catch (err) {}
 }
 
 async function signPetition(){
   const name = document.getElementById('sigName').value.trim();
   const id = document.getElementById('sigID').value.trim();
   const province = document.getElementById('sigProvince').value;
-  const confirmed = document.getElementById('confirm').checked;
+  if(!name||!id||!province){alert('Fill all fields');return;}
+  await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify({name,id,province})});
+  document.getElementById('signForm').classList.add('hidden');
+  document.getElementById('thankYou').classList.remove('hidden');
+  setTimeout(loadSignatureCount,2000);
+}
 
-  if(!name ||!id ||!province ||!confirmed){
-    alert('Please fill all fields and confirm');
-    return;
-  }
-  if(id.length < 13){
-    alert('Please enter a valid 13-digit ID number');
-    return;
-  }
+// Admin
+function adminLogin(){
+  if(document.getElementById('adminEmail').value==='admin@foodtrack.sa' &&
+     document.getElementById('adminPass').value==='admin123'){
+    document.getElementById('adminLogin').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    document.getElementById('adminReports').innerHTML = reports.map(r=>
+      `<div class="item-card"><b>${r.type}</b><br>${r.desc}<br><small>${r.time}</small></div>`
+    ).join('');
+  }else alert('Invalid login');
+}
 
-  try {
-    await fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify({name, id, province})
-    });
-    document.getElementById('signForm').classList.add('hidden');
-    document.getElementById('thankYou').classList.remove('hidden');
-    setTimeout(loadSignatureCount, 2000);
-  } catch (err) {
-    alert('Submission failed. Please try again.');
-  }
+function exportCSV(){
+  let csv = 'Type,Desc,Code,Time\n';
+  reports.forEach(r=>{csv+=`${r.type},"${r.desc}",${r.code},${r.time}\n`});
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;a.download='reports.csv';a.click();
 }
 
 // Init
+setLang(currentLang);
 renderShopList();
 updateDashboard();
 loadSignatureCount();
-setInterval(updateDashboard, 30000);
+setInterval(updateDashboard,30000);
+
+// Check for admin URL
+if(new URLSearchParams(window.location.search).has('admin')){
+  document.getElementById('adminBtn').classList.remove('hidden');
+}
 </script>
 </body>
 </html>
