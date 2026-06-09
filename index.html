@@ -47,10 +47,12 @@ h3{color:var(--green);margin-top:0}
   color:#fff;
   font-weight:bold;
   cursor:pointer;
-  font-size:1rem
+  font-size:1rem;
+  margin-top:8px
 }
 .btn:hover{background:#1b5e20}
 .btn:disabled{background:#ccc}
+.btn.secondary{background:#eee;color:#222}
 input,select,textarea{
   width:100%;
   padding:12px;
@@ -115,7 +117,7 @@ small{color:#666}
 .last-updated{font-size:11px;color:#888;text-align:right;margin-top:8px}
 .alert-box{background:#ffebee;border-left:4px solid var(--red);padding:12px;border-radius:6px;margin:12px 0}
 .success-box{background:#e8f5e9;border-left:4px solid var(--green);padding:12px;border-radius:6px;margin:12px 0}
-.qr-box{border:2px dashed var(--green);border-radius:12px;padding:40px;text-align:center;margin:16px 0;background:#f1f8e9}
+#qr-reader{width:100%;max-width:400px;margin:auto;border-radius:12px;overflow:hidden}
 </style>
 </head>
 <body>
@@ -137,15 +139,13 @@ small{color:#666}
 <div id="scanner" class="tab">
   <div class="card">
     <h3>Scan Product QR / Barcode</h3>
-    <div class="qr-box">
-      <p>📱 Point camera at QR or barcode</p>
-      <button class="btn" onclick="simulateScan()">Simulate Scan</button>
-      <small>Real app uses device camera API</small>
-    </div>
+    <div id="qr-reader"></div>
+    <button class="btn secondary" id="stopScan" onclick="stopScanner()" style="display:none">Stop Camera</button>
 
     <div id="scanResult" class="hidden">
       <h4>Scan Result</h4>
       <div id="productInfo"></div>
+      <button class="btn" onclick="reportThisProduct()">Report This Product</button>
     </div>
   </div>
 
@@ -197,16 +197,19 @@ small{color:#666}
       <option>Suspected Poisoning</option>
     </select>
 
+    <label>Product Code / Barcode</label>
+    <input type="text" id="issueCode" placeholder="Scanned code will appear here" readonly>
+
     <label>Description</label>
     <textarea id="issueDesc" rows="3" placeholder="Describe what you saw..."></textarea>
 
     <div class="upload-box">
       <p>📷 Add photo as evidence</p>
-      <input type="file" accept="image/*" onchange="showPreview(this)">
+      <input type="file" accept="image/*" capture="environment" onchange="showPreview(this)">
       <img id="preview" style="max-width:100%;margin-top:10px;display:none;border-radius:8px">
     </div>
 
-    <div id="gps">📍 GPS auto-captured</div>
+    <div id="gps">📍 GPS: Waiting for location...</div>
 
     <button class="btn" id="submitReport" onclick="submitReport()" disabled>Submit Report</button>
 
@@ -254,21 +257,12 @@ small{color:#666}
     <div class="metric"><span>Food-borne illnesses since Sept 2024</span><strong>890+</strong></div>
     <div class="metric"><span>Cost of illicit goods/year</span><strong>R100B</strong></div>
     <div class="metric"><span>UPF in 18-29yr diet</span><strong>40-60%</strong></div>
-    <div class="metric"><span>Child deaths linked to spaza shops</span><strong>Ongoing</strong></div>
   </div>
 </div>
 
 <div id="petition" class="tab hidden">
   <div class="card">
     <p><strong>Transparency kills fake food.</strong> Demand nationwide rollout of FoodTrack SA by Jan 2027.</p>
-
-    <h3>Why It Works</h3>
-    <ul>
-      <li>Kills corruption with public QR traceability</li>
-      <li>Protects kids in townships from poison food</li>
-      <li>Pushes people to registered, safe shops</li>
-      <li>Works offline with USSD/SMS backup</li>
-    </ul>
 
     <h3>Our Demand</h3>
     <p>We call on National Treasury, COGTA, SALGA, and Dept of Health to adopt FoodTrack SA nationwide.</p>
@@ -303,11 +297,6 @@ small{color:#666}
       <div class="status approved">✓ Thank you for signing! Share this with your community.</div>
     </div>
   </div>
-
-  <div class="disclaimer">
-    <strong>Disclaimer:</strong> FoodTrack SA is an independent citizen platform.
-    Not affiliated with government. Data sourced from public records and community reports.
-  </div>
 </div>
 
 </div>
@@ -316,6 +305,7 @@ small{color:#666}
   © 2026 FoodTrack SA. Built for transparency.
 </footer>
 
+<script src="https://unpkg.com/html5-qrcode"></script>
 <script>
 // CONFIG
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyJ-D9FcazMy7QfmzotbiyjXRmeUyNh4KIYUuqNOEfPdmPBBci5i6POC4zvUws3o6Fjvg/exec';
@@ -333,39 +323,87 @@ let reports = [];
 let alerts = [
   "⚠️ Fake 'Nola' peanut butter batch 4421 recalled in Gauteng",
   "✓ 200 boxes of expired canned fish seized in Durban",
-  "▶ New registered spaza shop opened in Langa, WC",
-  "⚠️ Suspected fake honey sold in Mamelodi. Avoid Lot H77"
+  "▶ New registered spaza shop opened in Langa, WC"
 ];
 let signatureCount = 0;
-let selectedSupplierId = null;
+let html5QrCode = null;
+let lastScannedCode = null;
+let userLocation = null;
+
+// Get GPS on load
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(pos=>{
+    userLocation = {lat:pos.coords.latitude, lng:pos.coords.longitude};
+    document.getElementById('gps').textContent = `📍 GPS: ${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}`;
+  }, ()=>{document.getElementById('gps').textContent = '📍 GPS: Not available'});
+}
 
 function showTab(tab){
   document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));
   document.getElementById(tab).classList.remove('hidden');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   event.target.classList.add('active');
+
+  if(tab === 'scanner' &&!html5QrCode) startScanner();
+  if(tab!== 'scanner' && html5QrCode) stopScanner();
   if(tab === 'shops') renderShopList();
   if(tab === 'dashboard') updateDashboard();
   if(tab === 'petition') loadSignatureCount();
 }
 
-function simulateScan(){
-  const products = [
-    {name:"Nola Peanut Butter 400g",batch:"4421",supplier:"Tiger Brands",status:"Recalled",flag:"danger"},
-    {name:"Koo Baked Beans 410g",batch:"B77",supplier:"Tiger Brands",status:"Valid",flag:"success"},
-    {name:"Unknown Cool Drink 2L",batch:"UNK",supplier:"Unregistered",status:"Unverified",flag:"warning"}
-  ];
-  const p = products[Math.floor(Math.random()*products.length)];
+function startScanner(){
+  html5QrCode = new Html5Qrcode("qr-reader");
+  const config = { fps: 10, qrbox: {width:250,height:250} };
+
+  html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+   .then(()=>{document.getElementById('stopScan').style.display='block'})
+   .catch(err=>alert("Camera error: "+err));
+}
+
+function stopScanner(){
+  if(html5QrCode){
+    html5QrCode.stop().then(()=>{
+      html5QrCode.clear();
+      html5QrCode = null;
+      document.getElementById('stopScan').style.display='none';
+    });
+  }
+}
+
+function onScanSuccess(decodedText, decodedResult){
+  if(decodedText === lastScannedCode) return;
+  lastScannedCode = decodedText;
+  checkProduct(decodedText);
+}
+
+function checkProduct(code){
+  // Demo lookup - replace with your API call
+  const demoDB = {
+    "4421": {name:"Nola Peanut Butter 400g",batch:"4421",supplier:"Tiger Brands",status:"Recalled",flag:"danger"},
+    "B77": {name:"Koo Baked Beans 410g",batch:"B77",supplier:"Tiger Brands",status:"Valid",flag:"success"},
+    "UNK": {name:"Unknown Product",batch:"UNK",supplier:"Unregistered",status:"Unverified",flag:"warning"}
+  };
+
+  const p = demoDB[code] || {name:"Product Not Found",batch:code,supplier:"Unknown",status:"Unverified",flag:"warning"};
+
   document.getElementById('scanResult').classList.remove('hidden');
   document.getElementById('productInfo').innerHTML = `
     <div class="card">
       <h4>${p.name}</h4>
-      <div class="metric"><span>Batch</span><strong>${p.batch}</strong></div>
+      <div class="metric"><span>Code/Batch</span><strong>${p.batch}</strong></div>
       <div class="metric"><span>Supplier</span><strong>${p.supplier}</strong></div>
       <div class="metric"><span>Status</span><strong style="color:${p.flag==='danger'?'red':p.flag==='warning'?'orange':'green'}">${p.status}</strong></div>
       ${p.flag==='danger'?'<div class="alert-box">Do not consume. Report immediately.</div>':''}
     </div>
   `;
+
+  document.getElementById('issueCode').value = code;
+  stopScanner();
+}
+
+function reportThisProduct(){
+  showTab('report');
+  document.getElementById('issueType').value = 'Fake/Counterfeit Product';
 }
 
 function renderShopList(){
@@ -398,17 +436,30 @@ function showPreview(input){
 function submitReport(){
   const type = document.getElementById('issueType').value;
   const desc = document.getElementById('issueDesc').value;
+  const code = document.getElementById('issueCode').value;
+
   if(!type ||!desc){
     alert('Please fill all fields');
     return;
   }
-  reports.push({type,desc,time:new Date().toLocaleString()});
+
+  reports.push({
+    type,desc,code,
+    location:userLocation,
+    time:new Date().toLocaleString(),
+    photo:document.getElementById('preview').src
+  });
+
   document.getElementById('reportStatus').classList.remove('hidden');
   setTimeout(()=>document.getElementById('status2').classList.remove('hidden'),1500);
   setTimeout(()=>document.getElementById('status3').classList.remove('hidden'),3000);
-  alert('Report submitted. Reference: FT'+Date.now());
+
+  alert('Report submitted. Ref: FT'+Date.now());
+
+  // Reset form
   document.getElementById('issueType').value = '';
   document.getElementById('issueDesc').value = '';
+  document.getElementById('issueCode').value = '';
   document.getElementById('preview').style.display = 'none';
   document.getElementById('submitReport').disabled = true;
 }
@@ -441,12 +492,8 @@ async function signPetition(){
   const province = document.getElementById('sigProvince').value;
   const confirmed = document.getElementById('confirm').checked;
 
-  if(!name ||!id ||!province){
-    alert('Please fill all fields');
-    return;
-  }
-  if(!confirmed){
-    alert('Please confirm you are a South African citizen');
+  if(!name ||!id ||!province ||!confirmed){
+    alert('Please fill all fields and confirm');
     return;
   }
   if(id.length < 13){
@@ -459,7 +506,7 @@ async function signPetition(){
       method: 'POST',
       mode: 'no-cors',
       headers: {'Content-Type': 'text/plain;charset=utf-8'},
-      body: JSON.stringify({name: name, id: id, province: province})
+      body: JSON.stringify({name, id, province})
     });
     document.getElementById('signForm').classList.add('hidden');
     document.getElementById('thankYou').classList.remove('hidden');
@@ -469,6 +516,7 @@ async function signPetition(){
   }
 }
 
+// Init
 renderShopList();
 updateDashboard();
 loadSignatureCount();
