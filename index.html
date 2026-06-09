@@ -19,7 +19,7 @@
 *{box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
 body{margin:0;background:var(--bg);color:var(--text)}
 body.high-contrast{background:#000;color:#fff}
-body.high-contrast.card{background:#111;border-color:#fff}
+body.high-contrast .card{background:#111;border-color:#fff}
 header{
   background:linear-gradient(90deg, var(--black) 0%, var(--green) 50%, var(--blue) 100%);
   color:#fff;
@@ -131,8 +131,8 @@ small{color:#666}
 </head>
 <body>
 <header>
-  <h2 id="title">FoodTrack SA</h2>
-  <small id="subtitle">Scan. Report. Grow. Transparency for Safe Food.</small>
+  <h2 id="title" data-i18n="title">FoodTrack SA</h2>
+  <small id="subtitle" data-i18n="subtitle">Scan. Report. Grow. Transparency for Safe Food.</small>
 </header>
 
 <nav>
@@ -150,10 +150,12 @@ small{color:#666}
   <button onclick="setLang('zu')">ZU</button>
   <button onclick="setLang('xh')">XH</button>
   <button onclick="setLang('af')">AF</button>
+  <button onclick="setLang('ns')">NS</button>
+  <button onclick="setLang('tn')">TN</button>
   <button onclick="toggleContrast()">High Contrast</button>
 </div>
 
-<div id="recallBanner" class="recall-banner hidden">
+<div id="recallBanner" class="recall-banner hidden" data-i18n="recall_banner">
   ⚠️ Recalled product detected in your area. Check dashboard for details.
 </div>
 
@@ -161,10 +163,10 @@ small{color:#666}
   <div class="card">
     <h3 data-i18n="scan_title">Scan Product QR / Barcode</h3>
     <div id="qr-reader"></div>
-    <button class="btn secondary" id="stopScan" onclick="stopScanner()" style="display:none">Stop Camera</button>
+    <button class="btn secondary" id="stopScan" onclick="stopScanner()" style="display:none" data-i18n="stop_camera">Stop Camera</button>
 
     <div id="scanResult" class="hidden">
-      <h4>Scan Result</h4>
+      <h4 data-i18n="scan_result">Scan Result</h4>
       <div id="productInfo"></div>
       <button class="btn" onclick="reportThisProduct()" data-i18n="report_btn">Report This Product</button>
     </div>
@@ -194,9 +196,9 @@ small{color:#666}
     <div class="success-box">
       <h4 data-i18n="garden_steps">3 Steps This Weekend</h4>
       <ol id="gardenSteps">
-        <li>Use buckets/tyres with drainage holes</li>
-        <li>Fill with soil + compost from kitchen scraps</li>
-        <li>Plant spinach or spring onion. Harvest in 3-4 weeks</li>
+        <li data-i18n="garden1">Use buckets/tyres with drainage holes</li>
+        <li data-i18n="garden2">Fill with soil + compost from kitchen scraps</li>
+        <li data-i18n="garden3">Plant spinach or spring onion. Harvest in 3-4 weeks</li>
       </ol>
     </div>
   </div>
@@ -205,26 +207,26 @@ small{color:#666}
 <div id="report" class="tab hidden">
   <div class="card">
     <h3 data-i18n="report_title">Report Fake or Expired Food</h3>
-    <button class="btn secondary" onclick="startVoice()">🎤 Speak Report</button>
+    <button class="btn secondary" onclick="startVoice()" data-i18n="speak">🎤 Speak Report</button>
 
     <label data-i18n="issue_type">Issue Type</label>
     <select id="issueType">
-      <option value="">Select Issue</option>
-      <option>Fake/Counterfeit Product</option>
-      <option>Expired Food</option>
-      <option>Expired Date Tampered</option>
-      <option>Unregistered Shop</option>
-      <option>Suspected Poisoning</option>
+      <option value="" data-i18n="select_issue">Select Issue</option>
+      <option data-i18n="issue1">Fake/Counterfeit Product</option>
+      <option data-i18n="issue2">Expired Food</option>
+      <option data-i18n="issue3">Expired Date Tampered</option>
+      <option data-i18n="issue4">Unregistered Shop</option>
+      <option data-i18n="issue5">Suspected Poisoning</option>
     </select>
 
-    <label>Product Code / Barcode</label>
+    <label data-i18n="code_label">Product Code / Barcode</label>
     <input type="text" id="issueCode" placeholder="Scanned code will appear here" readonly>
 
     <label data-i18n="desc">Description</label>
     <textarea id="issueDesc" rows="3" placeholder="Describe what you saw..."></textarea>
 
     <div class="upload-box">
-      <p>📷 Add photo as evidence</p>
+      <p data-i18n="photo">📷 Add photo as evidence</p>
       <input type="file" accept="image/*" capture="environment" onchange="showPreview(this)">
       <img id="preview" style="max-width:100%;margin-top:10px;display:none;border-radius:8px">
     </div>
@@ -234,9 +236,9 @@ small{color:#666}
     <button class="btn" id="submitReport" onclick="submitReport()" disabled data-i18n="submit">Submit Report</button>
 
     <div id="reportStatus" class="hidden">
-      <div class="status pending">1. Submitted - Awaiting Review</div>
-      <div class="status hidden" id="status2">2. Under Investigation</div>
-      <div class="status hidden" id="status3">3. Resolved ✓</div>
+      <div class="status pending" data-i18n="status1">1. Submitted - Awaiting Review</div>
+      <div class="status hidden" id="status2" data-i18n="status2">2. Under Investigation</div>
+      <div class="status hidden" id="status3" data-i18n="status3">3. Resolved ✓</div>
     </div>
   </div>
 </div>
@@ -253,68 +255,68 @@ small{color:#666}
     </div>
     <div class="stat-card">
       <h3 id="totalBusts">0</h3>
-      <small>Fake Goods Seized</small>
+      <small data-i18n="busts">Fake Goods Seized</small>
     </div>
     <div class="stat-card">
       <h3 id="totalGardens">0</h3>
-      <small>Gardens Started</small>
+      <small data-i18n="gardens">Gardens Started</small>
     </div>
   </div>
 
   <div class="card">
-    <h3>Recent Alerts</h3>
+    <h3 data-i18n="alerts">Recent Alerts</h3>
     <div id="alertLog"></div>
   </div>
 
   <div class="card">
-    <h3>Analytics</h3>
+    <h3 data-i18n="analytics">Analytics</h3>
     <canvas id="reportChart" height="200"></canvas>
   </div>
 
   <div class="card">
-    <h3>🏆 Top Reporters This Month</h3>
+    <h3 data-i18n="leaders">🏆 Top Reporters This Month</h3>
     <div id="leaderboard"></div>
   </div>
 </div>
 
 <div id="petition" class="tab hidden">
   <div class="card">
-    <p><strong>Transparency kills fake food.</strong> Demand nationwide rollout of FoodTrack SA by Jan 2027.</p>
+    <p><strong data-i18n="petition_head">Transparency kills fake food.</strong> <span data-i18n="petition_body">Demand nationwide rollout of FoodTrack SA by Jan 2027.</span></p>
     <div class="progress">
       <div class="progress-number" id="sigCount">0</div>
-      <div>Signatures / 100,000 target</div>
+      <div><span data-i18n="signatures">Signatures</span> / 100,000 <span data-i18n="target">target</span></div>
       <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
     </div>
-    <h3>Sign the Petition</h3>
+    <h3 data-i18n="sign">Sign the Petition</h3>
     <div id="signForm">
-      <input type="text" id="sigName" placeholder="Full Name">
-      <input type="text" id="sigID" placeholder="ID Number">
+      <input type="text" id="sigName" placeholder="Full Name" data-i18n-ph="name_ph">
+      <input type="text" id="sigID" placeholder="ID Number" data-i18n-ph="id_ph">
       <select id="sigProvince">
-        <option value="">Select Province</option>
+        <option value="" data-i18n="select_province">Select Province</option>
         <option>Gauteng</option><option>Western Cape</option><option>KwaZulu-Natal</option>
         <option>Eastern Cape</option><option>Limpopo</option><option>Mpumalanga</option>
         <option>North West</option><option>Northern Cape</option><option>Free State</option>
       </select>
-      <button class="btn" onclick="signPetition()">Sign the Petition</button>
+      <button class="btn" onclick="signPetition()" data-i18n="sign_btn">Sign the Petition</button>
     </div>
     <div id="thankYou" class="hidden">
-      <div class="status approved">✓ Thank you for signing!</div>
+      <div class="status approved" data-i18n="thanks">✓ Thank you for signing!</div>
     </div>
   </div>
 </div>
 
 <div id="admin" class="tab hidden">
   <div class="card">
-    <h3>Admin Panel</h3>
+    <h3 data-i18n="admin">Admin Panel</h3>
     <div id="adminLogin">
       <input type="email" id="adminEmail" placeholder="Email">
       <input type="password" id="adminPass" placeholder="Password">
-      <button class="btn" onclick="adminLogin()">Login</button>
+      <button class="btn" onclick="adminLogin()" data-i18n="login">Login</button>
     </div>
     <div id="adminPanel" class="hidden">
-      <h4>Pending Reports</h4>
+      <h4 data-i18n="pending">Pending Reports</h4>
       <div id="adminReports"></div>
-      <button class="btn" onclick="exportCSV()">Export CSV</button>
+      <button class="btn" onclick="exportCSV()" data-i18n="export">Export CSV</button>
     </div>
   </div>
 </div>
@@ -322,7 +324,7 @@ small{color:#666}
 </div>
 
 <footer>
-  © 2026 FoodTrack SA. Built for transparency.
+  © 2026 FoodTrack SA. <span data-i18n="footer">Built for transparency.</span>
 </footer>
 
 <script src="https://unpkg.com/html5-qrcode"></script>
@@ -352,273 +354,286 @@ let chart = null;
 let currentLang = localStorage.getItem('ft_lang')||'en';
 
 const i18n = {
-  en:{scan:"Scan Product",shops:"Safe Shops Map",report:"Report Issue",dashboard:"Dashboard",petition:"Petition",
-      scan_title:"Scan Product QR / Barcode",check_title:"30-Second Check",
-      check1:"Label: Can you pronounce the first 5 ingredients?",
-      check2:"Price: Too cheap for the brand? Red flag.",
-      check3:"Date: Check expiry. Look for tampering.",
-      check4:"Shop: Is the shop registered? Check map tab.",
-      report_btn:"Report This Product",map_title:"Registered Spaza Shops",
-      map_desc:"Only buy from shops with municipal permits. Green = compliant.",
-      garden_title:"Start a Home Garden",garden_steps:"3 Steps This Weekend",
-      report_title:"Report Fake or Expired Food",issue_type:"Issue Type",
-      desc:"Description",submit:"Submit Report",reports:"Reports This Month",
-      shops_count:"Registered Shops"},
-  zu:{scan:"Skena Umkhiqizo",shops:"Imephu Yezitolo",report:"Bika Inkinga",dashboard:"Ideshibhodi",petition:"Isicelo",
-      scan_title:"Skena i-QR / i-Barcode",check_title:"Ukuhlola Okusheshayo",
-      check1:"Ilebula: Ungayisho izithako ezi-5 zokuqala?",
-      check2:"Intengo: Ishibhile kakhulu? Ingozi.",
-      check3:"Usuku: Hlola usuku lokuphelelwa.",
-      check4:"Isitolo: Sibhalisiwe? Bheka imephu.",
-      report_btn:"Bika Lo Mkhiqizo"},
-  xh:{scan:"Skena Imveliso",shops:"Imephu Yeevenkile",report:"Xela Ingxaki",dashboard:"Ideshibhodi",petition:"Isicelo",
-      scan_title:"Skena i-QR / i-Barcode",check_title:"Ukuhlola Okukhawulezayo"},
-  af:{scan:"Skandeer Produk",shops:"Winkels Kaart",report:"Rapporteer Probleem",dashboard:"Paneel",petition:"Petisie",
-      scan_title:"Skandeer QR / Streepkode",check_title:"30-Sekonde Gaan Na"}
+  en:{
+    title:"FoodTrack SA",subtitle:"Scan. Report. Grow. Transparency for Safe Food.",
+    scan:"Scan Product",shops:"Safe Shops Map",report:"Report Issue",dashboard:"Dashboard",petition:"Petition",
+    scan_title:"Scan Product QR / Barcode",stop_camera:"Stop Camera",scan_result:"Scan Result",
+    report_btn:"Report This Product",check_title:"30-Second Check",
+    check1:"Label: Can you pronounce the first 5 ingredients?",
+    check2:"Price: Too cheap for the brand? Red flag.",
+    check3:"Date: Check expiry. Look for tampering.",
+    check4:"Shop: Is the shop registered? Check map tab.",
+    map_title:"Registered Spaza Shops",map_desc:"Only buy from shops with municipal permits. Green = compliant.",
+    garden_title:"Start a Home Garden",garden_steps:"3 Steps This Weekend",
+    garden1:"Use buckets/tyres with drainage holes",
+    garden2:"Fill with soil + compost from kitchen scraps",
+    garden3:"Plant spinach or spring onion. Harvest in 3-4 weeks",
+    report_title:"Report Fake or Expired Food",speak:"🎤 Speak Report",
+    issue_type:"Issue Type",select_issue:"Select Issue",
+    issue1:"Fake/Counterfeit Product",issue2:"Expired Food",issue3:"Expired Date Tampered",
+    issue4:"Unregistered Shop",issue5:"Suspected Poisoning",
+    code_label:"Product Code / Barcode",desc:"Description",photo:"📷 Add photo as evidence",
+    submit:"Submit Report",status1:"1. Submitted - Awaiting Review",
+    status2:"2. Under Investigation",status3:"3. Resolved ✓",
+    reports:"Reports This Month",shops_count:"Registered Shops",busts:"Fake Goods Seized",
+    gardens:"Gardens Started",alerts:"Recent Alerts",analytics:"Analytics",
+    leaders:"🏆 Top Reporters This Month",petition_head:"Transparency kills fake food.",
+    petition_body:"Demand nationwide rollout of FoodTrack SA by Jan 2027.",
+    signatures:"Signatures",target:"target",sign:"Sign the Petition",
+    name_ph:"Full Name",id_ph:"ID Number",select_province:"Select Province",
+    sign_btn:"Sign the Petition",thanks:"✓ Thank you for signing!",
+    admin:"Admin Panel",login:"Login",pending:"Pending Reports",export:"Export CSV",
+    recall_banner:"⚠️ Recalled product detected in your area. Check dashboard for details.",
+    footer:"Built for transparency."
+  },
+  zu:{
+    title:"FoodTrack SA",subtitle:"Skena. Bika. Tshala. Ukungafihli Ukudla Okuphephile.",
+    scan:"Skena Imveliso",shops:"Imephu Yezitolo",report:"Xela Inkinga",dashboard:"Ideshibhodi",petition:"Isicelo",
+    scan_title:"Skena i-QR / i-Barcode",stop_camera:"Misa Ikhamera",scan_result:"Umphumela Wokuskena",
+    report_btn:"Bika Lo Mkhiqizo",check_title:"Ukuhlola Okusheshayo",
+    check1:"Ilebula: Ungayisho izithako ezi-5 zokuqala?",
+    check2:"Intengo: Ishibhile kakhulu? Ingozi.",
+    check3:"Usuku: Hlola usuku lokuphelelwa.",
+    check4:"Isitolo: Sibhalisiwe? Bheka imephu.",
+    map_title:"Izitolo Ezibhalisiwe",map_desc:"Thenga ezitolo ezinemvume kamasipala kuphela. Okuluhlaza = kuhle.",
+    garden_title:"Qala Ingadi Ekhaya",garden_steps:"Izinyathelo Ezi-3 Kuleli Viki",
+    garden1:"Sebenzisa amabhakede/amathayi anezimbobo zokukhipha amanzi",
+    garden2:"Gcwalisa ngenhlabathi + umquba wezinsalela zasekhishini",
+    garden3:"Tshala isipinashi noma u-anyanisi. Vuna ezinsukwini ezingu-21-28",
+    report_title:"Bika Ukudla Okungamanga Noma Okuphelelwe",speak:"🎤 Khuluma Umbiko",
+    issue_type:"Uhlobo Lwenkinga",select_issue:"Khetha Inkinga",
+    issue1:"Umkhiqizo Ongamanga",issue2:"Ukudla Okuphelelwe",issue3:"Usuku Olushintshiwe",
+    issue4:"Isitolo Esingabhalisiwe",issue5:"Ukungenwa Ushevu",
+    code_label:"Ikhodi Yomkhiqizo",desc:"Incazelo",photo:"📷 Engeza isithombe njengobufakazi",
+    submit:"Thumela Umbiko",status1:"1. Kuthunyelwe - Kulindwe Ukubuyekezwa",
+    status2:"2. Iyahlolelwa",status3:"3. Sixazululiwe ✓",
+    reports:"Imibiko Kule Nyanga",shops_count:"Izitolo Ezibhalisiwe",busts:"Impahla Engamanga Ethathiwe",
+    gardens:"Izadi Eziqalisiwe",alerts:"Isexwayiso Sakamuva",analytics:"Izibalo",
+    leaders:"🏆 Ababiki Abaphezulu Kule Nyanga",petition_head:"Ukungafihli kubulala ukudla kwamanga.",
+    petition_body:"Funa ukusatshalaliswa kweFoodTrack SA ezweni lonke ngoJan 2027.",
+    signatures:"Amazayino",target:"inhloso",sign:"Sayina Isicelo",
+    name_ph:"Amagama Aphelele",id_ph:"Inombolo ye-ID",select_province:"Khetha Isifundazwe",
+    sign_btn:"Sayina Isicelo",thanks:"✓ Ngiyabonga ngokusayina!",
+    admin:"Iphaneli Yomlawuli",login:"Ngena",pending:"Imibiko Elindile",export:"Dlulisela ku-CSV",
+    recall_banner:"⚠️ Umkhiqizo okhunjulwe utholakele endaweni yakho. Bheka ideshibhodi.",
+    footer:"Kwakhelwe ukungafihli."
+  },
+  xh:{
+    title:"FoodTrack SA",subtitle:"Skena. Xela. Khula. Ukungafihli Kokutya Okukhuselekileyo.",
+    scan:"Skena Imveliso",shops:"Imephu Yeevenkile",report:"Xela Ingxaki",dashboard:"Ideshibhodi",petition:"Isicelo",
+    scan_title:"Skena i-QR / i-Barcode",stop_camera:"Yeka Ikhamera",scan_result:"Iziphumo Zokuskena",
+    report_btn:"Xela Le Mveliso",check_title:"Ukuhlola Okukhawulezayo",
+    check1:"Ileyibhile: Ungazibiza izithako ezi-5 zokuqala?",
+    check2:"Ixabiso: Liphantsi kakhulu? Ingozi.",
+    check3:"Umhla: Jonga umhla wokuphelelwa.",
+    check4:"Ivenkile: Ibhalisiwe? Jonga imephu.",
+    map_title:"Iivenkile Ezibhalisiweyo",map_desc:"Thenga kwiivenkile ezinemvume kamasipala kuphela.",
+    garden_title:"Qala Igadi Ekhaya",garden_steps:"Amanyathelo A-3 Kule Veki",
+    garden1:"Sebenzisa iibhakethi/amatayi anemingxuma yokukhupha amanzi",
+    garden2:"Zalisa ngomhlaba + isichumisi seentsalela zasekhishini",
+    garden3:"Tyala ispinatshi okanye itswele. Vuna kwiiveki ezi-3-4",
+    report_title:"Xela Ukutya Okungamanga Okanye Okuphelelwe",speak:"🎤 Thetha Ingxelo",
+    issue_type:"Uhlobo Lwengxaki",select_issue:"Khetha Ingxaki",
+    issue1:"Imveliso Engamanga",issue2:"Ukutya Okuphelelwe",issue3:"Umhla Otshintshiweyo",
+    issue4:"Ivenkile Engabhaliswanga",issue5:"Ukutyhefu Okukrokrelekayo",
+    code_label:"Ikhowudi Yemveliso",desc:"Inkcazo",photo:"📷 Yongeza umfanekiso njengobungqina",
+    submit:"Thumela Ingxelo",status1:"1. Ithunyelwe - Ilindele Uphononongo",
+    status2:"2. Iphandwa",status3:"3. Sonjululwe ✓",
+    reports:"Iingxelo Kule Nyanga",shops_count:"Iivenkile Ezibhalisiweyo",busts:"Impahla Engamanga Ethathiwe",
+    gardens:"Iigadi Eziqalisiweyo",alerts:"Izilumkiso Zakutsha nje",analytics:"Uhlalutyo",
+    leaders:"🏆 Abaxeli Abaphezulu Kule Nyanga",petition_head:"Ukungafihli kubulala ukutya kwamanga.",
+    petition_body:"Funa ukusasazwa kweFoodTrack SA ezweni lonke ngoJan 2027.",
+    signatures:"Iisayino",target:"injongo",sign:"Sayina Isicelo",
+    name_ph:"Amagama Apheleleyo",id_ph:"Inombolo ye-ID",select_province:"Khetha iPhondo",
+    sign_btn:"Sayina Isicelo",thanks:"✓ Enkosi ngokusayina!",
+    admin:"Iphaneli Yolawulo",login:"Ngena",pending:"Iingxelo Ezilindileyo",export:"Thumela ku-CSV",
+    recall_banner:"⚠️ Imveliso ekhunjulwayo ifunyenwe kummandla wakho.",
+    footer:"Yakhelwe ukungafihli."
+  },
+  af:{
+    title:"FoodTrack SA",subtitle:"Skandeer. Rapporteer. Groei. Deursigtigheid vir Veilige Kos.",
+    scan:"Skandeer Produk",shops:"Winkels Kaart",report:"Rapporteer Probleem",dashboard:"Paneel",petition:"Petisie",
+    scan_title:"Skandeer QR / Streepkode",stop_camera:"Stop Kamera",scan_result:"Skandeer Resultaat",
+    report_btn:"Rapporteer Hierdie Produk",check_title:"30-Sekonde Gaan Na",
+    check1:"Etiket: Kan jy die eerste 5 bestanddele uitspreek?",
+    check2:"Prys: Te goedkoop vir die handelsmerk? Rooi vlag.",
+    check3:"Datum: Gaan vervaldatum na. Kyk vir knoei.",
+    check4:"Winkel: Is die winkel geregistreer? Kyk kaart.",
+    map_title:"Geregistreerde Spaza Winkels",map_desc:"Koop net by winkels met munisipale permitte.",
+    garden_title:"Begin 'n Huistuin",garden_steps:"3 Stappe Hierdie Naweek",
+    garden1:"Gebruik emmers/bande met dreineringsgate",
+    garden2:"Vul met grond + kompos van kombuisafval",
+    garden3:"Plant spinasie of lente-ui. Oes in 3-4 weke",
+    report_title:"Rapporteer Vals of Vervalde Kos",speak:"🎤 Praat Verslag",
+    issue_type:"Tipe Probleem",select_issue:"Kies Probleem",
+    issue1:"Vals/Nagemaakte Produk",issue2:"Vervalde Kos",issue3:"Vervaldatum Gepeuter",
+    issue4:"Ongeregistreerde Winkel",issue5:"Vermoed Vergiftiging",
+    code_label:"Produk Kode / Streepkode",desc:"Beskrywing",photo:"📷 Voeg foto as bewys by",
+    submit:"Dien Verslag In",status1:"1. Ingedien - Wag op Hersiening",
+    status2:"2. Ondersoek",status3:"3. Opgelos ✓",
+    reports:"Verslae Hierdie Maand",shops_count:"Geregistreerde Winkels",busts:"Vals Goedere Inbeslag",
+    gardens:"Tuine Begin",alerts:"Onlangse Waarskuwings",analytics:"Analise",
+    leaders:"🏆 Top Rapporteurs Hierdie Maand",petition_head:"Deursigtigheid maak vals kos dood.",
+    petition_body:"Eis landwye bekendstelling van FoodTrack SA teen Jan 2027.",
+    signatures:"Handtekeninge",target:"teiken",sign:"Teken die Petisie",
+    name_ph:"Volle Naam",id_ph:"ID Nommer",select_province:"Kies Provinsie",
+    sign_btn:"Teken die Petisie",thanks:"✓ Dankie vir jou handtekening!",
+    admin:"Admin Paneel",login:"Teken In",pending:"Hangende Verslae",export:"Voer CSV Uit",
+    recall_banner:"⚠️ Teruggeroepte produk opgespoor in jou area.",
+    footer:"Gebou vir deursigtigheid."
+  },
+  <script>
+//... keep everything above the same...
+
+const i18n = {
+  en:{ /*... your existing en object... */ },
+  zu:{ /*... your existing zu object... */ },
+  xh:{ /*... your existing xh object... */ },
+  af:{ /*... your existing af object... */ },
+  ns:{ // Sepedi
+    title:"FoodTrack SA",subtitle:"Skena. Begela. Gola. Ponalo ya dijo tše di bolokegilego.",
+    scan:"Skena Sefepi",shops:'Mapa ya "Spaza"',report:"Begela Bothata",dashboard:"Lethathamo",petition:"Kgopelo",
+    scan_title:"Skena QR / Barcode",stop_camera:"Emiša Khamera",scan_result:"Dipoelo tša Skeno",
+    report_btn:"Begela Sefepi Se",check_title:"Teko ya Metsotswana a 30",
+    check1:"Letlapa: A o ka bala metswako ye 5 ya mathomo?",
+    check2:"Theko: E theko kudu go feta letšoao? Temoso.",
+    check3:"Letšatši: Lekola letšatši la go fela. Lekola go šutišwa.",
+    check4:"Lebentšele: Le ngwadišitšwe? Lebelela mapa.",
+    map_title:"Mabenkele a Spaza a Ngwadišitšwe",map_desc:"Reka fela mabenkeleng a nago le tumello ya mmasepala.",
+    garden_title:"Thoma Serapa Gae",garden_steps:"Dikgato tše 3 Bekeng Ye",
+    garden1:"Šomiša dibakete/maatla a nago le masoba a meetse",
+    garden2:"Tlala ka mobu + manyoro a dijo tša ka gae",
+    garden3:"Jala spinach goba eiye. Kotula ka dibeke tše 3-4",
+    report_title:"Begela Dijo tše di Forišwago goba tše di Feditšego",speak:"🎤 Bolela Tsheko",
+    issue_type:"Mohuta wa Bothata",select_issue:"Kgetha Bothata",
+    issue1:"Sefepi sa Maaka",issue2:"Dijo tše di Feditšego",issue3:"Letšatši le Šutišitšwego",
+    issue4:"Lebentšele le sa Ngwadišwago",issue5:"Chefo ye e Belawatšago",
+    code_label:"Khoutu ya Sefepi",desc:"Tlhalošo",photo:"📷 Oketša seswantšho bopaki",
+    submit:"Romela Tsheko",status1:"1. E Rometšwe - E Letile Tlhahlobo",
+    status2:"2. E a Lekolwa",status3:"3. E Lokeditšwe ✓",
+    reports:"Ditsheko tša Kgwedi Ye",shops_count:"Mabenkele a Ngwadišitšwe",busts:"Dithoto tše di Tšerwego",
+    gardens:"Dirapa tše di Thaditšwego",alerts:"Ditemošo tša Bjale",analytics:"Ditshekatsheko",
+    leaders:"🏆 Babegetši ba ka Pele Kgweding Ye",petition_head:"Ponalo e bolaya dijo tša maaka.",
+    petition_body:"Kgopela go tšweletša FoodTrack SA nageng ka moka ka Jan 2027.",
+    signatures:"Disaeno",target:"maikemišetšo",sign:"Saena Kgopelo",
+    name_ph:"Maina ka Moka",id_ph:"Nomoro ya ID",select_province:"Kgetha Porofense",
+    sign_btn:"Saena Kgopelo",thanks:"✓ Ke a leboga ka go saena!",
+    admin:"Phanele ya Molaodi",login:"Tsena",pending:"Ditsheko tše di Letilego",export:"Ntšha CSV",
+    recall_banner:"⚠️ Sefepi se gopolotšwego se hwetšagale kgauswi le wena.",
+    footer:"E agilwe bakeng sa ponalo.",
+    valid:"E Lokile",unverified:"Ga e Tsebege",recalled:"E Gopolotšwe",
+    compliant:"E Ngwadišitšwe",warning:"Temoso",danger:"Kotsi"
+  },
+  tn:{ // Setswana
+    title:"FoodTrack SA",subtitle:"Skena. Begela. Gola. Ponalo ya dijo tse di sireletsegileng.",
+    scan:"Skena Sepa",shops:'Mapa ya "Spaza"',report:"Begela Bothata",dashboard:"Dipotso",petition:"Kgopelo",
+    scan_title:"Skena QR / Barcode",stop_camera:"Emisa Khamera",scan_result:"Diphitlhelelo tsa Skeno",
+    report_btn:"Begela Sepa Se",check_title:"Tekolo ya Metsotso e 30",
+    check1:"Lepokisi: A o ka bua metswako e 5 ya ntlha?",
+    check2:"Theko: E theko e tlase thata? Kotsi.",
+    check3:"Letsatsi: Lekola letsatsi la go fela.",
+    check4:"Lephata: Le kwadisitswe? Lebelela mapa.",
+    map_title:"Mabenkele a Spaza a Kwadišitšwe",map_desc:"Reka fela kwa mabenkeleng a nang le tumello ya mmasepala.",
+    garden_title:"Simolola Temo Ya Gae",garden_steps:"Dikgato tse 3 Bekeng E",
+    garden1:"Dirisa dibakete/matha a nang le masoba a go tswa metsi",
+    garden2:"Tlatsa ka mobu + manyoro a dijo tsa gae",
+    garden3:"Jala spinach kgotsa eie. Kotula mo dibekeng tse 3-4",
+    report_title:"Begela Dijo tse di Forisiwang kgotsa tse di Fetseng",speak:"🎤 Bua Tlaleho",
+    issue_type:"Mohuta wa Bothata",select_issue:"Tlhopha Bothata",
+    issue1:"Sepa sa Maaka",issue2:"Dijo tse di Fetseng",issue3:"Letsatsi le Shutšitšweng",
+    issue4:"Lephata le sa Kwadišweng",issue5:"Chefo e Belawatšwang",
+    code_label:"Khoutu ya Sepa",desc:"Tlhaloso",photo:"📷 Tsenya setshwantsho jaaka bosupi",
+    submit:"Romela Tlaleho",status1:"1. E Rometswe - E Letile Tekolo",
+    status2:"2. E a Lekolwa",status3:"3. E Baakantswe ✓",
+    reports:"Ditlaleho tsa Kgwedi E",shops_count:"Mabenkele a Kwadišitšwe",busts:"Dilo tse di Tshwerweng",
+    gardens:"Ditlhomo tse di Simolotsweng",alerts:"Ditemoso tsa Jaanong",analytics:"Tshekatsheko",
+    leaders:"🏆 Babegetsi ba ka Pele Kgweding E",petition_head:"Ponalo e bolaya dijo tsa maaka.",
+    petition_body:"Kopa go phasalatsa FoodTrack SA mo nageng yotlhe ka Jan 2027.",
+    signatures:"Disaeno",target:"maikaelelo",sign:"Saena Kgopelo",
+    name_ph:"Maina ka Botlalo",id_ph:"Nomoro ya ID",select_province:"Tlhopha Porofense",
+    sign_btn:"Saena Kgopelo",thanks:"✓ Re a leboga ka go saena!",
+    admin:"Phanele ya Molaodi",login:"Tsena",pending:"Ditlaleho tse di Letileng",export:"Romela CSV",
+    recall_banner:"⚠️ Sepa se gopolotsweng se fitlhetswe mo tikologong ya gago.",
+    footer:"E agilwe bakeng sa ponalo.",
+    valid:"E Siame",unverified:"Ga e Itsiwe",recalled:"E Gopolotswe",
+    compliant:"E Kwadišitšwe",warning:"Temoso",danger:"Kotsi"
+  }
 };
 
-// Service Worker for offline
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('/sw.js').catch(()=>{});
-}
-
-// Language
+// Fixed translation function
 function setLang(lang){
   currentLang = lang;
   localStorage.setItem('ft_lang',lang);
+
+  // Update text content
   document.querySelectorAll('[data-i18n]').forEach(el=>{
     const key = el.getAttribute('data-i18n');
     if(i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
   });
-  document.querySelectorAll('.lang-toggle button').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
+
+  // Update placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-ph');
+    if(i18n[lang] && i18n[lang][key]) el.placeholder = i18n[lang][key];
+  });
+
+  // Update active button
+  document.querySelectorAll('.lang-toggle button').forEach(b=>{
+    b.classList.remove('active');
+    if(b.textContent.toLowerCase() === lang || b.onclick.toString().includes(`'${lang}'`)){
+      b.classList.add('active');
+    }
+  });
 }
 
-function toggleContrast(){
-  document.body.classList.toggle('high-contrast');
-}
-
-// GPS
-if(navigator.geolocation){
-  navigator.geolocation.getCurrentPosition(pos=>{
-    userLocation = {lat:pos.coords.latitude, lng:pos.coords.longitude};
-    document.getElementById('gps').textContent = `📍 GPS: ${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}`;
-    if(map) map.setView([userLocation.lat,userLocation.lng],13);
-  }, ()=>{document.getElementById('gps').textContent = '📍 GPS: Not available'});
-}
-
-// Tab switching
-function showTab(tab){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));
-  document.getElementById(tab).classList.remove('hidden');
-  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
-
-  if(tab === 'scanner' &&!html5QrCode) startScanner();
-  if(tab!== 'scanner' && html5QrCode) stopScanner();
-  if(tab === 'shops') initMap();
-  if(tab === 'dashboard') updateDashboard();
-  if(tab === 'petition') loadSignatureCount();
-  if(tab === 'admin' && new URLSearchParams(window.location.search).has('admin'))
-    document.getElementById('adminBtn').classList.remove('hidden');
-}
-
-// Scanner
-function startScanner(){
-  html5QrCode = new Html5Qrcode("qr-reader");
-  html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess)
-  .then(()=>{document.getElementById('stopScan').style.display='block'})
-  .catch(err=>alert("Camera error: "+err));
-}
-
-function stopScanner(){
-  if(html5QrCode){
-    html5QrCode.stop().then(()=>{
-      html5QrCode.clear();
-      html5QrCode = null;
-      document.getElementById('stopScan').style.display='none';
-    });
-  }
-}
-
-function onScanSuccess(decodedText){
-  if(decodedText === lastScannedCode) return;
-  lastScannedCode = decodedText;
-  checkProduct(decodedText);
-}
-
+// Update checkProduct to use translations
 function checkProduct(code){
   const demoDB = {
-    "4421": {name:"Nola Peanut Butter 400g",batch:"4421",supplier:"Tiger Brands",status:"Recalled",flag:"danger"},
-    "B77": {name:"Koo Baked Beans 410g",batch:"B77",supplier:"Tiger Brands",status:"Valid",flag:"success"}
+    "4421": {name:"Nola Peanut Butter 400g",batch:"4421",supplier:"Tiger Brands",status:"recalled",flag:"danger"},
+    "B77": {name:"Koo Baked Beans 410g",batch:"B77",supplier:"Tiger Brands",status:"valid",flag:"success"}
   };
-  const p = demoDB[code] || {name:"Product Not Found",batch:code,supplier:"Unknown",status:"Unverified",flag:"warning"};
+
+  const p = demoDB[code] || {name:"Product Not Found",batch:code,supplier:"Unknown",status:"unverified",flag:"warning"};
+
+  const t = i18n[currentLang];
+  const statusText = t[p.status] || p.status;
+
   document.getElementById('scanResult').classList.remove('hidden');
   document.getElementById('productInfo').innerHTML = `
     <div class="card">
       <h4>${p.name}</h4>
-      <div class="metric"><span>Code</span><strong>${p.batch}</strong></div>
+      <div class="metric"><span>Code/Batch</span><strong>${p.batch}</strong></div>
       <div class="metric"><span>Supplier</span><strong>${p.supplier}</strong></div>
-      <div class="metric"><span>Status</span><strong style="color:${p.flag==='danger'?'red':'green'}">${p.status}</strong></div>
-      ${p.flag==='danger'?'<div class="alert-box">Do not consume. Report immediately.</div>':''}
+      <div class="metric"><span>Status</span><strong style="color:${p.flag==='danger'?'red':p.flag==='warning'?'orange':'green'}">${statusText}</strong></div>
+      ${p.flag==='danger'?`<div class="alert-box">${t.recall_banner}</div>`:''}
     </div>
   `;
+
   document.getElementById('issueCode').value = code;
   if(p.flag==='danger') document.getElementById('recallBanner').classList.remove('hidden');
   stopScanner();
 }
 
-function reportThisProduct(){
-  showTab('report');
-  document.getElementById('issueType').value = 'Fake/Counterfeit Product';
-}
-
-// Map
-function initMap(){
-  if(map) return;
-  map = L.map('map').setView(userLocation? [userLocation.lat,userLocation.lng]:[-26.2041,28.0473],10);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-  saShops.forEach(s=>{
-    const color = s.status==='compliant'?'green':s.status==='warning'?'orange':'red';
-    L.circleMarker([s.lat,s.lng],{color:color,radius:8}).addTo(map)
-    .bindPopup(`<b>${s.name}</b><br>${s.location}<br>Status: ${s.status}<br>Reports: ${s.reports}`);
+// Update shop status translation
+function renderShopList(){
+  const t = i18n[currentLang];
+  const div = document.getElementById('shopList');
+  div.innerHTML = '';
+  saShops.forEach(s => {
+    const statusText = t[s.status] || s.status;
+    const badge = s.status==='compliant'?'badge':'badge '+(s.status==='warning'?'warning':'danger');
+    div.innerHTML += `
+      <div class="item-card">
+        <h4>${s.name} <span class="${badge}">${statusText.toUpperCase()}</span></h4>
+        <small>${s.location} | Permit: ${s.permits}</small>
+      </div>
+    `;
   });
+  document.getElementById('lastUpdated').textContent = `${t.last_updated || 'Last updated'}: ${new Date().toLocaleTimeString('en-ZA')}`;
 }
 
-// Report submission with offline queue
-function showPreview(input){
-  if(input.files && input.files[0]){
-    const reader = new FileReader();
-    reader.onload = e => {
-      document.getElementById('preview').src = e.target.result;
-      document.getElementById('preview').style.display = 'block';
-      document.getElementById('submitReport').disabled = false;
-    }
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-
-function submitReport(){
-  const report = {
-    type:document.getElementById('issueType').value,
-    desc:document.getElementById('issueDesc').value,
-    code:document.getElementById('issueCode').value,
-    location:userLocation,
-    time:new Date().toISOString(),
-    photo:document.getElementById('preview').src
-  };
-  if(!report.type||!report.desc){alert('Fill all fields');return;}
-
-  reports.push(report);
-  localStorage.setItem('ft_reports',JSON.stringify(reports));
-
-  if(navigator.onLine){
-    syncReports();
-  }else{
-    alert('Offline. Report saved and will sync when online.');
-  }
-
-  document.getElementById('reportStatus').classList.remove('hidden');
-  setTimeout(()=>document.getElementById('status2').classList.remove('hidden'),1500);
-  setTimeout(()=>document.getElementById('status3').classList.remove('hidden'),3000);
-}
-
-function syncReports(){
-  // Replace with your API call when ready
-  console.log('Syncing reports:',reports);
-}
-
-// Voice input
-function startVoice(){
-  if(!('webkitSpeechRecognition' in window)){alert('Voice not supported');return;}
-  const recognition = new webkitSpeechRecognition();
-  recognition.lang = currentLang==='zu'?'zu-ZA':'en-ZA';
-  recognition.onresult = e=>{
-    document.getElementById('issueDesc').value = e.results[0][0].transcript;
-  };
-  recognition.start();
-}
-
-// Dashboard + Chart
-function updateDashboard(){
-  document.getElementById('totalReports').innerText = reports.length;
-  document.getElementById('totalShops').innerText = saShops.filter(s=>s.status==='compliant').length;
-  document.getElementById('totalBusts').innerText = 12 + Math.floor(Math.random()*5);
-  document.getElementById('totalGardens').innerText = 47 + Math.floor(Math.random()*10);
-  document.getElementById('alertLog').innerHTML = alerts.map(a=>`<p>${a}</p>`).join('');
-
-  // Chart
-  if(!chart){
-    chart = new Chart(document.getElementById('reportChart'),{
-      type:'bar',
-      data:{
-        labels:['Gauteng','KZN','WC','EC','LP'],
-        datasets:[{label:'Reports',data:[5,3,2,1,1],backgroundColor:'rgba(46,125,50,0.7)'}]
-      }
-    });
-  }
-
-  // Leaderboard
-  const leaders = [{name:'Thabo M',count:12},{name:'Nomsa K',count:9},{name:'Sipho D',count:7}];
-  document.getElementById('leaderboard').innerHTML = leaders.map((l,i)=>
-    `<div class="leaderboard-item"><span>${i+1}. ${l.name}</span><span>${l.count} reports</span></div>`
-  ).join('');
-}
-
-// Petition
-async function loadSignatureCount() {
-  try {
-    const response = await fetch(`${APPS_SCRIPT_URL}`);
-    const data = await response.json();
-    signatureCount = data.count || 0;
-    document.getElementById('sigCount').textContent = signatureCount.toLocaleString();
-    document.getElementById('progressFill').style.width = Math.min(100,(signatureCount/TARGET_SIGNATURES)*100) + '%';
-  } catch (err) {}
-}
-
-async function signPetition(){
-  const name = document.getElementById('sigName').value.trim();
-  const id = document.getElementById('sigID').value.trim();
-  const province = document.getElementById('sigProvince').value;
-  if(!name||!id||!province){alert('Fill all fields');return;}
-  await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',body:JSON.stringify({name,id,province})});
-  document.getElementById('signForm').classList.add('hidden');
-  document.getElementById('thankYou').classList.remove('hidden');
-  setTimeout(loadSignatureCount,2000);
-}
-
-// Admin
-function adminLogin(){
-  if(document.getElementById('adminEmail').value==='admin@foodtrack.sa' &&
-     document.getElementById('adminPass').value==='admin123'){
-    document.getElementById('adminLogin').classList.add('hidden');
-    document.getElementById('adminPanel').classList.remove('hidden');
-    document.getElementById('adminReports').innerHTML = reports.map(r=>
-      `<div class="item-card"><b>${r.type}</b><br>${r.desc}<br><small>${r.time}</small></div>`
-    ).join('');
-  }else alert('Invalid login');
-}
-
-function exportCSV(){
-  let csv = 'Type,Desc,Code,Time\n';
-  reports.forEach(r=>{csv+=`${r.type},"${r.desc}",${r.code},${r.time}\n`});
-  const blob = new Blob([csv],{type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;a.download='reports.csv';a.click();
-}
-
-// Init
+// Call setLang on load
 setLang(currentLang);
-renderShopList();
-updateDashboard();
-loadSignatureCount();
-setInterval(updateDashboard,30000);
-
-// Check for admin URL
-if(new URLSearchParams(window.location.search).has('admin')){
-  document.getElementById('adminBtn').classList.remove('hidden');
-}
 </script>
 </body>
 </html>
