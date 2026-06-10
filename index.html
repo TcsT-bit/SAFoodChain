@@ -150,6 +150,13 @@ small{color:#666}
   <button onclick="setLang('zu')">ZU</button>
   <button onclick="setLang('xh')">XH</button>
   <button onclick="setLang('af')">AF</button>
+  <button onclick="setLang('st')">ST</button>
+  <button onclick="setLang('tn')">TN</button>
+  <button onclick="setLang('ts')">TS</button>
+  <button onclick="setLang('ss')">SS</button>
+  <button onclick="setLang('ve')">VE</button>
+  <button onclick="setLang('nr')">NR</button>
+  <button onclick="setLang('nso')">NSO</button>
   <button onclick="toggleContrast()">High Contrast</button>
 </div>
 
@@ -372,9 +379,68 @@ const i18n = {
       check4:"Isitolo: Sibhalisiwe? Bheka imephu.",
       report_btn:"Bika Lo Mkhiqizo"},
   xh:{scan:"Skena Imveliso",shops:"Imephu Yeevenkile",report:"Xela Ingxaki",dashboard:"Ideshibhodi",petition:"Isicelo",
-      scan_title:"Skena i-QR / i-Barcode",check_title:"Ukuhlola Okukhawulezayo"},
+      scan_title:"Skena i-QR / i-Barcode",check_title:"Ukuhlola Okukhawulezayo",
+      check1:"Ilebhile: Ungayibiza izithako ezi-5 zokuqala?",
+      check2:"Ixabiso: Lishibhile kakhulu? Ingozi.",
+      check3:"Umhla: Jonga umhla wokuphelelwa.",
+      check4:"Ivenkile: Ibhalisiwe? Jonga imephu.",
+      report_btn:"Xela Le Mveliso"},
   af:{scan:"Skandeer Produk",shops:"Winkels Kaart",report:"Rapporteer Probleem",dashboard:"Paneel",petition:"Petisie",
-      scan_title:"Skandeer QR / Streepkode",check_title:"30-Sekonde Gaan Na"}
+      scan_title:"Skandeer QR / Streepkode",check_title:"30-Sekonde Gaan Na",
+      check1:"Etiket: Kan jy die eerste 5 bestanddele uitspreek?",
+      check2:"Prys: Te goedkoop vir die handelsmerk? Rooi vlag.",
+      check3:"Datum: Gaan vervaldatum na.",
+      check4:"Winkel: Is die winkel geregistreer? Gaan kaart na.",
+      report_btn:"Rapporteer Hierdie Produk"},
+  st:{scan:"Skena Sehlahiswa",shops:"Mapa ya Mabenkele",report:"Tlaleha Bothata",dashboard:"Dashboard",petition:"Kopo",
+      scan_title:"Skena QR / Barcode",check_title:"Tlhahlobo ya Metsotso e 30",
+      check1:"Lebela: O ka bitsa metsoako e 5 ya pele?",
+      check2:"Theko: E theko e tlase haholo? Hlokomela.",
+      check3:"Letsatsi: Sheba letsatsi la ho felloa ke nako.",
+      check4:"Lebenkele: Le ngodisitswe? Sheba mapa.",
+      report_btn:"Tlaleha Sehlahiswa Sena"},
+  tn:{scan:"Sekena Setshwantsho",shops:"Mapa ya Mabenkele",report:"Bega Bothata",dashboard:"Dashboard",petition:"Kopo",
+      scan_title:"Sekena QR / Barcode",check_title:"Tekolo ya Metsotso e 30",
+      check1:"Leibole: O ka bua metswako e 5 ya ntlha?",
+      check2:"Theko: E theko e kwa tlase thata? Sekao.",
+      check3:"Letsatsi: Leba letsatsi la go fela.",
+      check4:"Lefelo la theko: Le kwadisitswe? Leba mapa.",
+      report_btn:"Bega Setshwantsho Se"},
+  ts:{scan:"Skena Xitirhisiwa",shops:"Mepe ya Tivenkele",report:"Vika Xiphiqo",dashboard:"Dashboard",petition:"Xikombelo",
+      scan_title:"Skena QR / Barcode",check_title:"Kambisiso ya Minete ya 30",
+      check1:"Labeli: U nga vula swilo swo sungula swa 5?",
+      check2:"Ntsengo: Wu durhile ngopfu? Xivono.",
+      check3:"Siku: Languta siku ro hetelela.",
+      check4:"Ntiko: Yi tsarisiwile? Languta mepe.",
+      report_btn:"Vika Xitirhisiwa Lexi"},
+  ss:{scan:"Skena Umkhiqizo",shops:"Imephu Yetitolo",report:"Bika Inkinga",dashboard:"Dashboard",petition:"Sicelo",
+      scan_title:"Skena i-QR / i-Barcode",check_title:"Kuhlola Kwemizuzu e-30",
+      check1:"Lebula: Ungasho titsako leti-5 tekucala?",
+      check2:"Intfo: Ishibhile kakhulu? Likhala lelibomvu.",
+      check3:"Lusuku: Buka lusuku lwekuphela.",
+      check4:"Sitolo: Sibhalisiwe? Buka imephu.",
+      report_btn:"Bika Lomkhiqizo"},
+  ve:{scan:"Skena Tshumelo",shops:"Mepe ya Mafenya",report:"Vhea Thaidzo",dashboard:"Dashboard",petition:"Thendo",
+      scan_title:"Skena QR / Barcode",check_title:"U Toda Mineti ya 30",
+      check1:"Lebula: U nga amba zwishumiselwa zwa u thoma zwi 5?",
+      check2:"Mutengo: U sheshea fhano? Mulenzhe.",
+      check3:"Duvha: Sedzani duvha la u fhela.",
+      check4:"Fhenya: Yo nwalisiwa? Sedzani mepe.",
+      report_btn:"Vhea Tshumelo Iyi"},
+  nr:{scan:"Skena Umkhiqizo",shops:"Imephu Yezitolo",report:"Bika Inkinga",dashboard:"Dashboard",petition:"Isicelo",
+      scan_title:"Skena i-QR / i-Barcode",check_title:"Ukuhlola Kwemizuzu e-30",
+      check1:"Ilebula: Ungayibiza izithako ezi-5 zokuqala?",
+      check2:"Intengo: Ishibhile kakhulu? Likhala lelibomvu.",
+      check3:"Usuku: Buka usuku lokuphela.",
+      check4:"Isitolo: Sibhalisiwe? Buka imephu.",
+      report_btn:"Bika Lomkhiqizo"},
+  nso:{scan:"Skena Sehlahiswa",shops:"Mapa ya Mabenkele",report:"Tsebiša Bothata",dashboard:"Dashboard",petition:"Kopo",
+      scan_title:"Skena QR / Barcode",check_title:"Tlhahlobo ya Metsotso e 30",
+      check1:"Lebela: O ka bolela metswako e 5 ya mathomo?",
+      check2:"Theko: E theko e tlase kudu? Hlokomela.",
+      check3:"Letšatši: Lebelela letšatši la go fela.",
+      check4:"Lebenkele: Le ngwadišitšwe? Lebelela mapa.",
+      report_btn:"Tsebiša Sehlahiswa Se"}
 };
 
 // Service Worker for offline
@@ -391,7 +457,7 @@ function setLang(lang){
     if(i18n[lang] && i18n[lang][key]) el.textContent = i18n[lang][key];
   });
   document.querySelectorAll('.lang-toggle button').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
+  if(event && event.target) event.target.classList.add('active');
 }
 
 function toggleContrast(){
@@ -412,7 +478,7 @@ function showTab(tab){
   document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));
   document.getElementById(tab).classList.remove('hidden');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
+  if(event && event.target) event.target.classList.add('active');
 
   if(tab === 'scanner' &&!html5QrCode) startScanner();
   if(tab!== 'scanner' && html5QrCode) stopScanner();
@@ -427,8 +493,8 @@ function showTab(tab){
 function startScanner(){
   html5QrCode = new Html5Qrcode("qr-reader");
   html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess)
-  .then(()=>{document.getElementById('stopScan').style.display='block'})
-  .catch(err=>alert("Camera error: "+err));
+ .then(()=>{document.getElementById('stopScan').style.display='block'})
+ .catch(err=>alert("Camera error: "+err));
 }
 
 function stopScanner(){
@@ -481,7 +547,7 @@ function initMap(){
   saShops.forEach(s=>{
     const color = s.status==='compliant'?'green':s.status==='warning'?'orange':'red';
     L.circleMarker([s.lat,s.lng],{color:color,radius:8}).addTo(map)
-    .bindPopup(`<b>${s.name}</b><br>${s.location}<br>Status: ${s.status}<br>Reports: ${s.reports}`);
+   .bindPopup(`<b>${s.name}</b><br>${s.location}<br>Status: ${s.status}<br>Reports: ${s.reports}`);
   });
 }
 
@@ -524,7 +590,6 @@ function submitReport(){
 }
 
 function syncReports(){
-  // Replace with your API call when ready
   console.log('Syncing reports:',reports);
 }
 
@@ -547,18 +612,19 @@ function updateDashboard(){
   document.getElementById('totalGardens').innerText = 47 + Math.floor(Math.random()*10);
   document.getElementById('alertLog').innerHTML = alerts.map(a=>`<p>${a}</p>`).join('');
 
-  // Chart
   if(!chart){
     chart = new Chart(document.getElementById('reportChart'),{
       type:'bar',
       data:{
         labels:['Gauteng','KZN','WC','EC','LP'],
         datasets:[{label:'Reports',data:[5,3,2,1,1],backgroundColor:'rgba(46,125,50,0.7)'}]
-      }
+      },
+      options:{responsive:true,maintainAspectRatio:false}
     });
+  } else {
+    chart.update();
   }
 
-  // Leaderboard
   const leaders = [{name:'Thabo M',count:12},{name:'Nomsa K',count:9},{name:'Sipho D',count:7}];
   document.getElementById('leaderboard').innerHTML = leaders.map((l,i)=>
     `<div class="leaderboard-item"><span>${i+1}. ${l.name}</span><span>${l.count} reports</span></div>`
@@ -573,7 +639,9 @@ async function loadSignatureCount() {
     signatureCount = data.count || 0;
     document.getElementById('sigCount').textContent = signatureCount.toLocaleString();
     document.getElementById('progressFill').style.width = Math.min(100,(signatureCount/TARGET_SIGNATURES)*100) + '%';
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 async function signPetition(){
@@ -601,24 +669,25 @@ function adminLogin(){
 
 function exportCSV(){
   let csv = 'Type,Desc,Code,Time\n';
-  reports.forEach(r=>{csv+=`${r.type},"${r.desc}",${r.code},${r.time}\n`});
+  reports.forEach(r=>{
+    csv+=`${r.type},"${r.desc}",${r.code},${r.time}\n`;
+  });
   const blob = new Blob([csv],{type:'text/csv'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;a.download='reports.csv';a.click();
+  a.href = url;
+  a.download = 'foodtrack_reports.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 // Init
 setLang(currentLang);
-renderShopList();
 updateDashboard();
 loadSignatureCount();
-setInterval(updateDashboard,30000);
-
-// Check for admin URL
-if(new URLSearchParams(window.location.search).has('admin')){
-  document.getElementById('adminBtn').classList.remove('hidden');
-}
+setInterval(updateDashboard, 30000); // update every 30s
 </script>
 </body>
 </html>
