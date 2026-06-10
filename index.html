@@ -136,27 +136,27 @@ small{color:#666}
 </header>
 
 <nav>
-  <button class="active" onclick="showTab('scanner')" data-i18n="scan">Scan Product</button>
-  <button onclick="showTab('shops')" data-i18n="shops">Safe Shops Map</button>
-  <button onclick="showTab('report')" data-i18n="report">Report Issue</button>
-  <button onclick="showTab('dashboard')" data-i18n="dashboard">Dashboard</button>
-  <button onclick="showTab('petition')" data-i18n="petition">Petition</button>
-  <button onclick="showTab('admin')" id="adminBtn" class="hidden">Admin</button>
+  <button class="active" onclick="showTab('scanner', event)" data-i18n="scan">Scan Product</button>
+  <button onclick="showTab('shops', event)" data-i18n="shops">Safe Shops Map</button>
+  <button onclick="showTab('report', event)" data-i18n="report">Report Issue</button>
+  <button onclick="showTab('dashboard', event)" data-i18n="dashboard">Dashboard</button>
+  <button onclick="showTab('petition', event)" data-i18n="petition">Petition</button>
+  <button onclick="showTab('admin', event)" id="adminBtn" class="hidden">Admin</button>
 </nav>
 
 <div class="container">
 <div class="lang-toggle">
-  <button onclick="setLang('en')" class="active">EN</button>
-  <button onclick="setLang('zu')">ZU</button>
-  <button onclick="setLang('xh')">XH</button>
-  <button onclick="setLang('af')">AF</button>
-  <button onclick="setLang('st')">ST</button>
-  <button onclick="setLang('tn')">TN</button>
-  <button onclick="setLang('ts')">TS</button>
-  <button onclick="setLang('ss')">SS</button>
-  <button onclick="setLang('ve')">VE</button>
-  <button onclick="setLang('nr')">NR</button>
-  <button onclick="setLang('nso')">NSO</button>
+  <button onclick="setLang('en', event)" class="active">EN</button>
+  <button onclick="setLang('zu', event)">ZU</button>
+  <button onclick="setLang('xh', event)">XH</button>
+  <button onclick="setLang('af', event)">AF</button>
+  <button onclick="setLang('st', event)">ST</button>
+  <button onclick="setLang('tn', event)">TN</button>
+  <button onclick="setLang('ts', event)">TS</button>
+  <button onclick="setLang('ss', event)">SS</button>
+  <button onclick="setLang('ve', event)">VE</button>
+  <button onclick="setLang('nr', event)">NR</button>
+  <button onclick="setLang('nso', event)">NSO</button>
   <button onclick="toggleContrast()">High Contrast</button>
 </div>
 
@@ -449,7 +449,7 @@ if('serviceWorker' in navigator){
 }
 
 // Language
-function setLang(lang){
+function setLang(lang, event){
   currentLang = lang;
   localStorage.setItem('ft_lang',lang);
   document.querySelectorAll('[data-i18n]').forEach(el=>{
@@ -474,7 +474,7 @@ if(navigator.geolocation){
 }
 
 // Tab switching
-function showTab(tab){
+function showTab(tab, event){
   document.querySelectorAll('.tab').forEach(t=>t.classList.add('hidden'));
   document.getElementById(tab).classList.remove('hidden');
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
@@ -493,8 +493,8 @@ function showTab(tab){
 function startScanner(){
   html5QrCode = new Html5Qrcode("qr-reader");
   html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess)
- .then(()=>{document.getElementById('stopScan').style.display='block'})
- .catch(err=>alert("Camera error: "+err));
+.then(()=>{document.getElementById('stopScan').style.display='block'})
+.catch(err=>alert("Camera error: "+err));
 }
 
 function stopScanner(){
@@ -547,7 +547,7 @@ function initMap(){
   saShops.forEach(s=>{
     const color = s.status==='compliant'?'green':s.status==='warning'?'orange':'red';
     L.circleMarker([s.lat,s.lng],{color:color,radius:8}).addTo(map)
-   .bindPopup(`<b>${s.name}</b><br>${s.location}<br>Status: ${s.status}<br>Reports: ${s.reports}`);
+  .bindPopup(`<b>${s.name}</b><br>${s.location}<br>Status: ${s.status}<br>Reports: ${s.reports}`);
   });
 }
 
@@ -659,19 +659,39 @@ async function signPetition(){
 function adminLogin(){
   if(document.getElementById('adminEmail').value==='admin@foodtrack.sa' &&
      document.getElementById('adminPass').value==='admin123'){
+
     document.getElementById('adminLogin').classList.add('hidden');
     document.getElementById('adminPanel').classList.remove('hidden');
-    document.getElementById('adminReports').innerHTML = reports.map(r=>
-      `<div class="item-card"><b>${r.type}</b><br>${r.desc}<br><small>${r.time}</small></div>`
-    ).join('');
-  }else alert('Invalid login');
+
+    if(reports.length === 0){
+      document.getElementById('adminReports').innerHTML = '<p>No reports yet</p>';
+    } else {
+      document.getElementById('adminReports').innerHTML = reports.map(r=>
+        `<div class="item-card">
+          <b>${r.type}</b><br>
+          ${r.desc}<br>
+          <small>Code: ${r.code} | ${r.time}</small>
+        </div>`
+      ).join('');
+    }
+  } else {
+    alert('Invalid login');
+  }
 }
 
 function exportCSV(){
-  let csv = 'Type,Desc,Code,Time\n';
+  if(reports.length === 0){
+    alert('No reports to export');
+    return;
+  }
+
+  let csv = 'Type,Desc,Code,Time,Lat,Lng\n';
   reports.forEach(r=>{
-    csv+=`${r.type},"${r.desc}",${r.code},${r.time}\n`;
+    const lat = r.location? r.location.lat : '';
+    const lng = r.location? r.location.lng : '';
+    csv+=`${r.type},"${r.desc}",${r.code},${r.time},${lat},${lng}\n`;
   });
+
   const blob = new Blob([csv],{type:'text/csv'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
